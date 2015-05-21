@@ -3,7 +3,7 @@
 namespace NOpt
 {
     /// <summary>
-    /// Value that are not bound to named option
+    /// Value that are not bound to named option. Can be bound only to strings.
     /// </summary>
     /// <example>
     /// program.exe file1 file2
