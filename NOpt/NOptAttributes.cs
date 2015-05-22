@@ -13,77 +13,83 @@ namespace NOpt
         /// <summary>
         /// Extract option class memebers via reflaction into dictoinary
         /// </summary>
-        /// <typeparam name="T">Option class</typeparam>
-        /// <param name="opt">Option instance</param>
-        /// <param name="hasVerb">return true, if verb option is present</param>
+        /// <param name="optionType">Option class or struct type</param>
+        /// <param name="hasVerb">return true, if verb is present</param>
         /// <returns>
         /// Dictionary with keys: char for shortname, string for longname and verb, int for unbounded value index
         /// </returns>
-        public static Dictionary<object, MemberInfo> Discover<T>(T opt, out bool hasVerb)
+        public static Dictionary<object, MemberInfo> Discover(Type optionType, out bool hasVerb)
         {
             hasVerb = false;
 
-            Type optType = opt.GetType();
             Dictionary<object, MemberInfo> attributes = new Dictionary<object, MemberInfo>();
 
-            foreach (MemberInfo member in optType.GetMembers())
+            foreach (MemberInfo member in optionType.GetMembers())
             {
-                ValueAttribute valueAttribute = member.GetCustomAttribute<ValueAttribute>();
-                OptionAttribute optionsAttribute = member.GetCustomAttribute<OptionAttribute>();
-                VerbAttribute verbAttribute = member.GetCustomAttribute<VerbAttribute>();
+                var valueAttributes = member.GetCustomAttributes<ValueAttribute>();
+                var optionsAttributes = member.GetCustomAttributes<OptionAttribute>();
+                var verbAttributes = member.GetCustomAttributes<VerbAttribute>();
                 int attrCount =
-                    (valueAttribute != null ? 1 : 0) +
-                    (optionsAttribute != null ? 1 : 0) +
-                    (verbAttribute != null ? 1 : 0);
+                    (valueAttributes.Any() ? 1 : 0) +
+                    (optionsAttributes.Any() ? 1 : 0) +
+                    (verbAttributes.Any() ? 1 : 0);
 
                 if (attrCount > 1)
                     throw new ArgumentException(
                         "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class member", member.Name);
 
-                if (valueAttribute != null)
+                if (valueAttributes.Any())
                 {
-                    if (attributes.ContainsKey(valueAttribute.Index))
-                        throw new ArgumentException(
-                            $"Two class members marked as ValueAttribute with same index: '{attributes[valueAttribute.Index].Name}' and {member.Name}");
-
-                    attributes[valueAttribute.Index] = member;
-                }
-
-                if (optionsAttribute != null)
-                {
-                    if (optionsAttribute.ShortName != null)
+                    foreach(var attr in valueAttributes)
                     {
-                        if (!char.IsLetter(optionsAttribute.ShortName.Value))
-                            throw new ArgumentException("Short name must be letter", member.Name);
-
-                        if (attributes.ContainsKey(optionsAttribute.ShortName.Value))
+                        if (attributes.ContainsKey(attr.Index))
                             throw new ArgumentException(
-                                $"Two class members marked as OptionAttribute with same short name: '{attributes[optionsAttribute.ShortName.Value].Name}' and {member.Name}");
+                                $"Two class members marked as ValueAttribute with same index: '{attributes[attr.Index].Name}' and {member.Name}");
 
-                        attributes[optionsAttribute.ShortName.Value] = member;
-                    }
-                    if (optionsAttribute.LongName != null)
-                    {
-                        if (!validOptionName.IsMatch(optionsAttribute.LongName))
-                            throw new ArgumentException("Long name invalid", member.Name);
-
-                        if (attributes.ContainsKey(optionsAttribute.LongName))
-                            throw new ArgumentException(
-                                $"Two class members marked with same long name: '{attributes[optionsAttribute.LongName].Name}' and {member.Name}");
-
-                        attributes[optionsAttribute.LongName] = member;
+                        attributes[attr.Index] = member;
                     }
                 }
 
-                if (verbAttribute != null)
+                if (optionsAttributes.Any())
                 {
-                    if (attributes.ContainsKey(verbAttribute.Name))
-                        throw new ArgumentException(
-                            $"Two class members marked with same long name: '{attributes[verbAttribute.Name].Name}' and {member.Name}");
+                    foreach(var attr in optionsAttributes)
+                    {
+                        if (attr.ShortName != null)
+                        {
+                            if (!char.IsLetter(attr.ShortName.Value))
+                                throw new ArgumentException("Short name must be letter", member.Name);
 
-                    attributes[verbAttribute.Name] = member;
-                    hasVerb = true;
-                    break;
+                            if (attributes.ContainsKey(attr.ShortName.Value))
+                                throw new ArgumentException(
+                                    $"Two class members marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {member.Name}");
+
+                            attributes[attr.ShortName.Value] = member;
+                        }
+                        if (attr.LongName != null)
+                        {
+                            if (!validOptionName.IsMatch(attr.LongName))
+                                throw new ArgumentException("Long name invalid", member.Name);
+
+                            if (attributes.ContainsKey(attr.LongName))
+                                throw new ArgumentException(
+                                    $"Two class members marked with same long name: '{attributes[attr.LongName].Name}' and {member.Name}");
+
+                            attributes[attr.LongName] = member;
+                        }
+                    }
+                }
+
+                if (verbAttributes.Any())
+                {
+                    foreach(var attr in verbAttributes)
+                    {
+                        if (attributes.ContainsKey(attr.Name))
+                            throw new ArgumentException(
+                                $"Two class members marked with same long name: '{attributes[attr.Name].Name}' and {member.Name}");
+
+                        attributes[attr.Name] = member;
+                        hasVerb = true;
+                    }
                 }
             }
 

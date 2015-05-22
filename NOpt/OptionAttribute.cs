@@ -32,7 +32,7 @@ namespace NOpt
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
-        AllowMultiple = false,
+        AllowMultiple = true,
         Inherited = true)]
     public sealed class OptionAttribute : Attribute
     {

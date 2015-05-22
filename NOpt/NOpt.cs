@@ -8,8 +8,6 @@ namespace NOpt
 {
     // TODO compare complexity of code with "commandline"
 
-    // TODO multi command on same fields
-
     // TODO document enums. See Enum.Parse help
 
     // TODO mutual exclusive
@@ -33,7 +31,7 @@ namespace NOpt
         private static string Parse(IEnumerable<string> args, object opt)
         {
             bool hasVerb;
-            Dictionary<object, MemberInfo> attributes = NOptAttributes.Discover(opt, out hasVerb);
+            Dictionary<object, MemberInfo> attributes = NOptAttributes.Discover(opt.GetType(), out hasVerb);
 
             return TokenizeUnixStyle(args, opt, attributes, hasVerb);
         }

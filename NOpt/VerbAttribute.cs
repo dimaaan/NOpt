@@ -14,7 +14,7 @@ namespace NOpt
     /// </example>
     /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
-        AllowMultiple = false, 
+        AllowMultiple = true, 
         Inherited = true)]
     public sealed class VerbAttribute : Attribute
     {
