@@ -136,7 +136,9 @@ namespace NOpt
                         char name = e.Current[1];
                         string val = e.MoveNext() ? e.Current : null;
 
-                        setOption(opt, attributes, name, val);
+                        errorMessage = setOption(opt, attributes, name, val);
+                        if (errorMessage != null)
+                            break;
                     }
                     else if(e.Current.Length > 2) // in case "program -abc"
                     {
@@ -144,7 +146,9 @@ namespace NOpt
                         for (int i = 1; i < e.Current.Length; i++)
                         {
                             name = e.Current[i];
-                            setOption(opt, attributes, name, null);
+                            errorMessage = setOption(opt, attributes, name, null);
+                            if (errorMessage != null)
+                                break;
                         }
                     }
                     else // in case "program -"
@@ -170,9 +174,40 @@ namespace NOpt
             throw new NotImplementedException("setOption long");
         }
 
-        private static void setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
+        private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
         {
-            throw new NotImplementedException("setOption short");
+            MemberInfo memberInfo;
+
+            if (!attributes.TryGetValue(shortName, out memberInfo))
+                return $"Invalid option: -{value}";
+
+            if(value == null)
+            {
+                if(memberInfo is FieldInfo)
+                {
+                    FieldInfo f = (FieldInfo)memberInfo;
+
+                    if (f.FieldType != typeof(bool))
+                        return $"Option -{shortName} should have a value";
+
+                    f.SetValue(opt, true);
+                }
+                else if(memberInfo is PropertyInfo)
+                {
+                    PropertyInfo p = (PropertyInfo)memberInfo;
+
+                    if (p.PropertyType != typeof(bool))
+                        return $"Option -{shortName} should have a value";
+
+                    p.SetValue(opt, true);
+                }
+                else
+                {
+                    throw new ArgumentException("OptionAttribute should be appiled only to fields or properties", memberInfo.Name);
+                }
+            }
+
+            return null;
         }
 
         private static string setValue<T>(T opt, Dictionary<object, MemberInfo> attributes, int index, string value)
@@ -190,10 +225,10 @@ namespace NOpt
                 FieldInfo f = (FieldInfo)memberInfo;
                 f.SetValue(opt, value);
             }
-            else if(memberInfo is PropertyInfo)
+            else if (memberInfo is PropertyInfo)
             {
-                PropertyInfo f = (PropertyInfo)memberInfo;
-                f.SetValue(opt, value);
+                PropertyInfo p = (PropertyInfo)memberInfo;
+                p.SetValue(opt, value);
             }
             else
             {
