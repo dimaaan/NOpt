@@ -46,6 +46,12 @@ namespace NOpt
             LongName = longName;
         }
 
+        public OptionAttribute(char shortName, string longName)
+        {
+            ShortName = shortName;
+            LongName = longName;
+        }
+
         public char? ShortName { get; set; }
 
         public string LongName { get; set; }

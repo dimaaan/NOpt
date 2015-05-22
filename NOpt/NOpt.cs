@@ -8,6 +8,8 @@ namespace NOpt
 {
     // TODO compare complexity of code with "commandline"
 
+    // TODO multi command on same fields
+
     public static class NOpt
     {
         private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);
@@ -19,11 +21,18 @@ namespace NOpt
                 throw new ArgumentNullException(nameof(args));
 
             T opt = new T();
-            Dictionary<object, MemberInfo> attributes = DiscoverNOptAttributes(opt);
 
-            TokenizeUnixStyle(args, opt, attributes);
+            Parse(args, opt);
 
             return opt;
+        }
+
+        private static string Parse(IEnumerable<string> args, object opt)
+        {
+            bool hasVerb;
+            Dictionary<object, MemberInfo> attributes = DiscoverNOptAttributes(opt, out hasVerb);
+
+            return TokenizeUnixStyle(args, opt, attributes, hasVerb);
         }
 
         /// <summary>
@@ -32,20 +41,17 @@ namespace NOpt
         /// <typeparam name="T">Option class</typeparam>
         /// <param name="opt">Option instance</param>
         /// <returns>
-        /// Dictionary with keys: char for shortname, string for longname, int for unbounded value index
+        /// Dictionary with keys: char for shortname, string for longname and verb, int for unbounded value index
         /// </returns>
-        private static Dictionary<object, MemberInfo> DiscoverNOptAttributes<T>(T opt)
+        private static Dictionary<object, MemberInfo> DiscoverNOptAttributes<T>(T opt, out bool hasVerb)
         {
+            hasVerb = false;
+
             Type optType = opt.GetType();
-            var members = from m in optType.GetMembers()
-                          where m.MemberType == MemberTypes.Field || m.MemberType == MemberTypes.Property
-                          select m;
+            Dictionary<object, MemberInfo> attributes = new Dictionary<object, MemberInfo>();
 
-            var attributes = new Dictionary<object, MemberInfo>();
-
-            foreach (MemberInfo member in members)
+            foreach (MemberInfo member in optType.GetMembers())
             {
-
                 ValueAttribute valueAttribute = member.GetCustomAttribute<ValueAttribute>();
                 OptionAttribute optionsAttribute = member.GetCustomAttribute<OptionAttribute>();
                 VerbAttribute verbAttribute = member.GetCustomAttribute<VerbAttribute>();
@@ -62,7 +68,7 @@ namespace NOpt
                 {
                     if (attributes.ContainsKey(valueAttribute.Index))
                         throw new ArgumentException(
-                            $"Two class memebrs marked as ValueAttribute with same index: '{attributes[valueAttribute.Index].Name}' and {member.Name}");
+                            $"Two class members marked as ValueAttribute with same index: '{attributes[valueAttribute.Index].Name}' and {member.Name}");
 
                     attributes[valueAttribute.Index] = member;
                 }
@@ -74,19 +80,34 @@ namespace NOpt
                         if (!char.IsLetter(optionsAttribute.ShortName.Value))
                             throw new ArgumentException("Short name must be letter", member.Name);
 
-                        attributes.Add(optionsAttribute.ShortName.Value, member);
+                        if (attributes.ContainsKey(optionsAttribute.ShortName.Value))
+                            throw new ArgumentException(
+                                $"Two class members marked as OptionAttribute with same short name: '{attributes[optionsAttribute.ShortName.Value].Name}' and {member.Name}");
+
+                        attributes[optionsAttribute.ShortName.Value] = member;
                     }
                     if (optionsAttribute.LongName != null)
                     {
                         if (!validOptionName.IsMatch(optionsAttribute.LongName))
                             throw new ArgumentException("Long name invalid", member.Name);
 
-                        attributes.Add(optionsAttribute.LongName, member);
+                        if (attributes.ContainsKey(optionsAttribute.LongName))
+                            throw new ArgumentException(
+                                $"Two class members marked with same long name: '{attributes[optionsAttribute.LongName].Name}' and {member.Name}");
+
+                        attributes[optionsAttribute.LongName] = member;
                     }
                 }
-                else // VerbAttribute
+
+                if (verbAttribute != null)
                 {
-                    // TODO recursive call
+                    if (attributes.ContainsKey(verbAttribute.Name))
+                        throw new ArgumentException(
+                            $"Two class members marked with same long name: '{attributes[verbAttribute.Name].Name}' and {member.Name}");
+
+                    attributes[verbAttribute.Name] = member;
+                    hasVerb = true;
+                    break;
                 }
             }
 
@@ -94,12 +115,12 @@ namespace NOpt
         }
 
         /// <returns>null if success, otherwise error message</returns>
-        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, MemberInfo> attributes)
+        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, MemberInfo> attributes, bool hasVerb)
         {
             // TODO --a=b syntax
 
             string errorMessage = null;
-            int valuesCount = 0;
+            int valuesCount = 0, count = 0;
 
             var e = args.GetEnumerator();
             while (e.MoveNext())
@@ -147,11 +168,47 @@ namespace NOpt
                 }
                 else // in case "program file.txt"
                 {
-                    errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
+                    if(count == 0 && valuesCount == 0 && hasVerb && attributes.ContainsKey(e.Current)) // maybe this is a verb?
+                    {
+                        MemberInfo verbMember = attributes[e.Current];
 
-                    if (errorMessage != null)
-                        break;
+                        if(verbMember is FieldInfo)
+                        {
+                            FieldInfo f = (FieldInfo)verbMember;
+                            Type verbType = f.FieldType;
+                            object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
+
+                            errorMessage = Parse(args.Skip(1), verbInstance);
+                            if (errorMessage != null)
+                                break;
+                            f.SetValue(opt, verbInstance);
+                        }
+                        else if(verbMember is PropertyInfo)
+                        {
+                            PropertyInfo p = (PropertyInfo)verbMember;
+                            Type verbType = p.PropertyType;
+                            object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
+
+                            errorMessage = Parse(args.Skip(1), verbInstance);
+                            if (errorMessage != null)
+                                break;
+                            p.SetValue(opt, verbInstance);
+                        }
+                        else
+                        {
+                            throw new ArgumentException("VerbAttribute should be appiled to fields and properties");
+                        }
+                    }
+                    else // its a value
+                    {
+                        errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
+
+                        if (errorMessage != null)
+                            break;
+                    }
                 }
+
+                count++;
             }
 
             return errorMessage;
@@ -243,7 +300,19 @@ namespace NOpt
             }
             else
             {
-                // TODO
+                if (memberInfo is FieldInfo)
+                {
+                    ((FieldInfo)memberInfo).SetValue(opt, value);
+                }
+                else if (memberInfo is PropertyInfo)
+                {
+                    ((PropertyInfo)memberInfo).SetValue(opt, value);
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(value))
+                        return $"Value for {memberInfo.Name} is null or empty string";
+                }
             }
 
             return null;

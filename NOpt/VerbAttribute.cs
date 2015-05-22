@@ -13,7 +13,7 @@ namespace NOpt
     /// "save" and "load" is a verbs
     /// </example>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, 
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
         AllowMultiple = false, 
         Inherited = true)]
     public sealed class VerbAttribute : Attribute
@@ -23,6 +23,6 @@ namespace NOpt
             Name = name;
         }
 
-        public string Name { get; set; }
+        public readonly string Name;
     }
 }
