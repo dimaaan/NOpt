@@ -17,8 +17,8 @@ namespace NOpt
     ///     [Option('b')]
     ///     public bool opt2; // will be true, because option exists in command line
     /// 
-    ///     [Option('с', DefaultValue = "default")]
-    ///     public string opt3; // will be "default"
+    ///     [Option('с')]
+    ///     public string opt3 = "default"; // will be "default"
     /// 
     ///     [Option('d')]
     ///     public bool opt4; // will be false
@@ -46,10 +46,8 @@ namespace NOpt
             LongName = longName;
         }
 
-        public char ShortName { get; set; }
+        public char? ShortName { get; set; }
 
         public string LongName { get; set; }
-
-        public object DefaultValue { get; set; }
     }
 }

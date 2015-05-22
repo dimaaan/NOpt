@@ -37,5 +37,32 @@ namespace NOpt.Test
                 Assert.True(opt.opt1 && opt.opt2 && opt.opt3);
             }
         }
+
+
+        public class LongOption
+        {
+            public class Options
+            {
+                [Option('f', LongName = "file")]
+                public string opt;
+
+                [Option("action")]
+                public bool opt2;
+            }
+
+            Options opt;
+
+            public LongOption()
+            {
+                opt = NOpt.Parse<Options>(new string[] { "--file", "readme.txt", "--action" });
+            }
+
+            [Fact]
+            public void check()
+            {
+                Assert.Equal("readme.txt", opt.opt);
+                Assert.True(opt.opt2);
+            }
+        }
     }
 }

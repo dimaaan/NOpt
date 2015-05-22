@@ -45,60 +45,48 @@ namespace NOpt
 
             foreach (MemberInfo member in members)
             {
-                var nOptAttrsData = from customAttr in member.CustomAttributes
-                                let attrType = customAttr.AttributeType
-                                where
-                                attrType == typeof(ValueAttribute) ||
-                                attrType == typeof(OptionAttribute) ||
-                                attrType == typeof(VerbAttribute)
-                                select customAttr;
 
-                if (nOptAttrsData.Count() > 1)
-                    throw new ArgumentException("ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class member", member.Name);
+                ValueAttribute valueAttribute = member.GetCustomAttribute<ValueAttribute>();
+                OptionAttribute optionsAttribute = member.GetCustomAttribute<OptionAttribute>();
+                VerbAttribute verbAttribute = member.GetCustomAttribute<VerbAttribute>();
+                int attrCount =
+                    (valueAttribute != null ? 1 : 0) +
+                    (optionsAttribute != null ? 1 : 0) +
+                    (verbAttribute != null ? 1 : 0);
 
-                CustomAttributeData attrData = nOptAttrsData.FirstOrDefault();
+                if (attrCount > 1)
+                    throw new ArgumentException(
+                        "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class member", member.Name);
 
-                if (attrData != null)
+                if (valueAttribute != null)
                 {
-                    if (attrData.AttributeType == typeof(ValueAttribute))
+                    if (attributes.ContainsKey(valueAttribute.Index))
+                        throw new ArgumentException(
+                            $"Two class memebrs marked as ValueAttribute with same index: '{attributes[valueAttribute.Index].Name}' and {member.Name}");
+
+                    attributes[valueAttribute.Index] = member;
+                }
+
+                if (optionsAttribute != null)
+                {
+                    if (optionsAttribute.ShortName != null)
                     {
-                        int index = (int)attrData.ConstructorArguments[0].Value;
+                        if (!char.IsLetter(optionsAttribute.ShortName.Value))
+                            throw new ArgumentException("Short name must be letter", member.Name);
 
-                        if (attributes.ContainsKey(index))
-                            throw new ArgumentException(
-                                $"Two class memebrs marked as ValueAttribute with same index: '{attributes[index].Name}' and {member.Name}");
-
-                        attributes[index] = member;
+                        attributes.Add(optionsAttribute.ShortName.Value, member);
                     }
-                    else if (attrData.AttributeType == typeof(OptionAttribute))
+                    if (optionsAttribute.LongName != null)
                     {
-                        if (attrData.ConstructorArguments[0].Value != null)
-                        {
-                            char shortName = (char)attrData.ConstructorArguments[0].Value;
+                        if (!validOptionName.IsMatch(optionsAttribute.LongName))
+                            throw new ArgumentException("Long name invalid", member.Name);
 
-                            if (!char.IsLetter(shortName))
-                                throw new ArgumentException("Short name must be letter", member.Name);
-
-                            attributes.Add(shortName, member);
-                        }
-                        else if (attrData.ConstructorArguments[1].Value != null)
-                        {
-                            string longName = (string)attrData.ConstructorArguments[1].Value;
-
-                            if (!validOptionName.IsMatch(longName))
-                                throw new ArgumentException("Long name invalid", member.Name);
-
-                            attributes.Add(longName, member);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Short or long name requireq", member.Name);
-                        }
+                        attributes.Add(optionsAttribute.LongName, member);
                     }
-                    else // VerbAttribute
-                    {
-                        // TODO recursive call
-                    }
+                }
+                else // VerbAttribute
+                {
+                    // TODO recursive call
                 }
             }
 
@@ -169,9 +157,56 @@ namespace NOpt
             return errorMessage;
         }
 
-        private static void setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, string longName, string value)
+        private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, string longName, string value)
         {
-            throw new NotImplementedException("setOption long");
+            MemberInfo memberInfo;
+
+            if (!attributes.TryGetValue(longName, out memberInfo))
+                return $"Invalid option: --{value}";
+
+            if(value == null)
+            {
+                if (memberInfo is FieldInfo)
+                {
+                    FieldInfo f = (FieldInfo)memberInfo;
+
+                    if (f.FieldType != typeof(bool))
+                        return $"Option --{longName} should have a value";
+
+                    f.SetValue(opt, true);
+                }
+                else if (memberInfo is PropertyInfo)
+                {
+                    PropertyInfo p = (PropertyInfo)memberInfo;
+
+                    if (p.PropertyType != typeof(bool))
+                        return $"Option --{longName} should have a value";
+
+                    p.SetValue(opt, true);
+                }
+                else
+                {
+                    throw new ArgumentException("OptionAttribute should be appiled only to fields or properties", memberInfo.Name);
+                }
+            }
+            else
+            {
+                if (memberInfo is FieldInfo)
+                {
+                    ((FieldInfo)memberInfo).SetValue(opt, value);
+                }
+                else if (memberInfo is PropertyInfo)
+                {
+                    ((PropertyInfo)memberInfo).SetValue(opt, value);
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(value))
+                        return $"Value for {memberInfo.Name} is null or empty string";
+                }
+            }
+
+            return null;
         }
 
         private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
@@ -205,6 +240,10 @@ namespace NOpt
                 {
                     throw new ArgumentException("OptionAttribute should be appiled only to fields or properties", memberInfo.Name);
                 }
+            }
+            else
+            {
+                // TODO
             }
 
             return null;
