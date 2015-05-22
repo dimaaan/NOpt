@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NOpt.cs" />
+    <Compile Include="NOptAttributes.cs" />
     <Compile Include="OptionAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueAttribute.cs" />
