@@ -3,7 +3,7 @@
 namespace NOpt
 {
     /// <summary>
-    /// Value that are not bound to named option. Can be bound only to strings.
+    /// Value that are not bound to named option
     /// </summary>
     /// <example>
     /// program.exe file1 file2
@@ -19,8 +19,8 @@ namespace NOpt
     ///     [Value(2)]
     ///     public string opt3; // will be null
     /// 
-    ///     [Value(3, DefaultValue="default")]
-    ///     public string opt4; // will be "default"
+    ///     [Value(3)]
+    ///     public string opt4 = "default value"; // will be "default value"
     /// }
     /// </code>
     /// </example>
@@ -40,11 +40,6 @@ namespace NOpt
         /// <summary>
         /// Position in the command line. Starts from zero
         /// </summary>
-        public int Index { get; set; }
-
-        /// <summary>
-        /// Sets if no value supplied from command line
-        /// </summary>
-        public object DefaultValue { get; set; }
+        public readonly int Index;
     }
 }

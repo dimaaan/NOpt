@@ -22,8 +22,8 @@ namespace NOpt.Test
                 [Value(2)]
                 public string opt3; // will be null
 
-                [Value(3, DefaultValue = "default")]
-                public string opt4; // will be "default"
+                [Value(3)]
+                public string opt4 = "default value"; // will be "default"
             }
 
             public Options4 opt;
@@ -35,27 +35,12 @@ namespace NOpt.Test
             
 
             [Fact]
-            public void opt1()
+            public void check()
             {
                 Assert.Equal("file1", opt.opt1);
-            }
-
-            [Fact]
-            public void opt2()
-            {
                 Assert.Equal("file2", opt.opt2);
-            }
-
-            [Fact]
-            public void opt3()
-            {
                 Assert.Equal(null, opt.opt3);
-            }
-
-            [Fact]
-            public void opt4()
-            {
-                Assert.Equal("default", opt.opt4);
+                Assert.Equal("default value", opt.opt4);
             }
         }
     }
