@@ -57,6 +57,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumTest.cs" />
+    <Compile Include="Git\Options\Add.cs" />
+    <Compile Include="Git\Options\Am.cs" />
+    <Compile Include="Git\Options\Options.cs" />
+    <Compile Include="Git\GitTest.cs" />
     <Compile Include="OptionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValueTests.cs" />
