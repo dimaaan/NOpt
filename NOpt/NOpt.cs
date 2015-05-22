@@ -10,6 +10,8 @@ namespace NOpt
 
     // TODO multi command on same fields
 
+    // TODO document enums. See Enum.Parse help
+
     public static class NOpt
     {
         private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);
@@ -40,6 +42,7 @@ namespace NOpt
         /// </summary>
         /// <typeparam name="T">Option class</typeparam>
         /// <param name="opt">Option instance</param>
+        /// <param name="hasVerb">return true, if verb option is present</param>
         /// <returns>
         /// Dictionary with keys: char for shortname, string for longname and verb, int for unbounded value index
         /// </returns>
@@ -230,7 +233,7 @@ namespace NOpt
                     if (f.FieldType != typeof(bool))
                         return $"Option --{longName} should have a value";
 
-                    f.SetValue(opt, true);
+                    return AssignValueTo(opt, f, true);
                 }
                 else if (memberInfo is PropertyInfo)
                 {
@@ -239,7 +242,7 @@ namespace NOpt
                     if (p.PropertyType != typeof(bool))
                         return $"Option --{longName} should have a value";
 
-                    p.SetValue(opt, true);
+                    return AssignValueTo(opt, p, true);
                 }
                 else
                 {
@@ -248,22 +251,11 @@ namespace NOpt
             }
             else
             {
-                if (memberInfo is FieldInfo)
-                {
-                    ((FieldInfo)memberInfo).SetValue(opt, value);
-                }
-                else if (memberInfo is PropertyInfo)
-                {
-                    ((PropertyInfo)memberInfo).SetValue(opt, value);
-                }
-                else
-                {
-                    if (String.IsNullOrEmpty(value))
-                        return $"Value for {memberInfo.Name} is null or empty string";
-                }
-            }
+                if (String.IsNullOrEmpty(value))
+                    return $"Value for {memberInfo.Name} is empty string";
 
-            return null;
+                return AssignValueTo(opt, memberInfo, value);
+            }
         }
 
         private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
@@ -282,7 +274,7 @@ namespace NOpt
                     if (f.FieldType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    f.SetValue(opt, true);
+                    return AssignValueTo(opt, f, value);
                 }
                 else if(memberInfo is PropertyInfo)
                 {
@@ -291,7 +283,7 @@ namespace NOpt
                     if (p.PropertyType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    p.SetValue(opt, true);
+                    return AssignValueTo(opt, p, value);
                 }
                 else
                 {
@@ -300,22 +292,11 @@ namespace NOpt
             }
             else
             {
-                if (memberInfo is FieldInfo)
-                {
-                    ((FieldInfo)memberInfo).SetValue(opt, value);
-                }
-                else if (memberInfo is PropertyInfo)
-                {
-                    ((PropertyInfo)memberInfo).SetValue(opt, value);
-                }
-                else
-                {
-                    if (String.IsNullOrEmpty(value))
-                        return $"Value for {memberInfo.Name} is null or empty string";
-                }
-            }
+                if (String.IsNullOrEmpty(value))
+                    return $"Value for {memberInfo.Name} is empty string";
 
-            return null;
+                return AssignValueTo(opt, memberInfo, value);
+            }
         }
 
         private static string setValue<T>(T opt, Dictionary<object, MemberInfo> attributes, int index, string value)
@@ -328,19 +309,69 @@ namespace NOpt
             if (String.IsNullOrEmpty(value))
                 return $"Value for {memberInfo.Name} is null or empty string";
 
-            if (memberInfo is FieldInfo)
+            return AssignValueTo(opt, memberInfo, value);
+        }
+
+        private static string AssignValueTo<T>(T opt, MemberInfo m, object value)
+        {
+            if(m is FieldInfo)
             {
-                FieldInfo f = (FieldInfo)memberInfo;
-                f.SetValue(opt, value);
+                return AssignValueTo(opt, (FieldInfo)m, value);
             }
-            else if (memberInfo is PropertyInfo)
+            else if (m is PropertyInfo)
             {
-                PropertyInfo p = (PropertyInfo)memberInfo;
-                p.SetValue(opt, value);
+                return AssignValueTo(opt, (PropertyInfo)m, value);
             }
             else
             {
-                throw new ArgumentException("ValueAttribute should be appiled only to fields or properties", memberInfo.Name);
+                throw new ArgumentException("NOpt attributes should be appiled only to fields or properties", m.Name);
+            }
+        }
+
+        private static string AssignValueTo<T>(T opt, FieldInfo f, object value)
+        {
+            if(f.FieldType.IsEnum)
+            {
+                object enumValue;
+
+                try
+                {
+                    enumValue = Enum.Parse(f.FieldType, (string) value, true);
+                }
+                catch(Exception)  {
+                    return $"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}";
+                }
+
+                f.SetValue(opt, enumValue);
+            }
+            else
+            {
+                f.SetValue(opt, value);
+            }
+
+            return null;
+        }
+
+        private static string AssignValueTo<T>(T opt, PropertyInfo p, string value)
+        {
+            if (p.PropertyType.IsEnum)
+            {
+                object enumValue;
+
+                try
+                {
+                    enumValue = Enum.Parse(p.PropertyType, value, true);
+                }
+                catch (Exception)
+                {
+                    return $"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(p.PropertyType))}";
+                }
+
+                p.SetValue(opt, enumValue);
+            }
+            else
+            {
+                p.SetValue(opt, value);
             }
 
             return null;
