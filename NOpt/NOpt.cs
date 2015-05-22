@@ -138,7 +138,7 @@ namespace NOpt
             return errorMessage;
         }
 
-        private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, string longName, string value)
+        private static string setOption(object opt, Dictionary<object, MemberInfo> attributes, string longName, string value)
         {
             MemberInfo memberInfo;
 
@@ -154,7 +154,7 @@ namespace NOpt
                     if (f.FieldType != typeof(bool))
                         return $"Option --{longName} should have a value";
 
-                    return AssignValueTo(opt, f, true);
+                    return AssignToField(opt, f, true);
                 }
                 else if (memberInfo is PropertyInfo)
                 {
@@ -163,7 +163,7 @@ namespace NOpt
                     if (p.PropertyType != typeof(bool))
                         return $"Option --{longName} should have a value";
 
-                    return AssignValueTo(opt, p, true);
+                    return AssignToProperty(opt, p, true);
                 }
                 else
                 {
@@ -175,11 +175,11 @@ namespace NOpt
                 if (String.IsNullOrEmpty(value))
                     return $"Value for {memberInfo.Name} is empty string";
 
-                return AssignValueTo(opt, memberInfo, value);
+                return AssignToClassMember(opt, memberInfo, value);
             }
         }
 
-        private static string setOption<T>(T opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
+        private static string setOption(object opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
         {
             MemberInfo memberInfo;
 
@@ -195,7 +195,7 @@ namespace NOpt
                     if (f.FieldType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    return AssignValueTo(opt, f, true);
+                    return AssignToField(opt, f, true);
                 }
                 else if(memberInfo is PropertyInfo)
                 {
@@ -204,7 +204,7 @@ namespace NOpt
                     if (p.PropertyType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    return AssignValueTo(opt, p, true);
+                    return AssignToProperty(opt, p, true);
                 }
                 else
                 {
@@ -216,11 +216,11 @@ namespace NOpt
                 if (String.IsNullOrEmpty(value))
                     return $"Value for {memberInfo.Name} is empty string";
 
-                return AssignValueTo(opt, memberInfo, value);
+                return AssignToClassMember(opt, memberInfo, value);
             }
         }
 
-        private static string setValue<T>(T opt, Dictionary<object, MemberInfo> attributes, int index, string value)
+        private static string setValue(object opt, Dictionary<object, MemberInfo> attributes, int index, string value)
         {
             MemberInfo memberInfo;
 
@@ -230,18 +230,20 @@ namespace NOpt
             if (String.IsNullOrEmpty(value))
                 return $"Value for {memberInfo.Name} is null or empty string";
 
-            return AssignValueTo(opt, memberInfo, value);
+            return AssignToClassMember(opt, memberInfo, value);
         }
 
-        private static string AssignValueTo<T>(T opt, MemberInfo m, object value)
+
+
+        private static string AssignToClassMember(object opt, MemberInfo m, object value)
         {
             if(m is FieldInfo)
             {
-                return AssignValueTo(opt, (FieldInfo)m, value);
+                return AssignToField(opt, (FieldInfo)m, value);
             }
             else if (m is PropertyInfo)
             {
-                return AssignValueTo(opt, (PropertyInfo)m, value);
+                return AssignToProperty(opt, (PropertyInfo)m, value);
             }
             else
             {
@@ -249,7 +251,7 @@ namespace NOpt
             }
         }
 
-        private static string AssignValueTo<T>(T opt, FieldInfo f, object value)
+        private static string AssignToField(object opt, FieldInfo f, object value)
         {
             if(f.FieldType.IsEnum)
             {
@@ -273,7 +275,7 @@ namespace NOpt
             return null;
         }
 
-        private static string AssignValueTo<T>(T opt, PropertyInfo p, string value)
+        private static string AssignToProperty(object opt, PropertyInfo p, object value)
         {
             if (p.PropertyType.IsEnum)
             {
@@ -281,7 +283,7 @@ namespace NOpt
 
                 try
                 {
-                    enumValue = Enum.Parse(p.PropertyType, value, true);
+                    enumValue = Enum.Parse(p.PropertyType, (string) value, true);
                 }
                 catch (Exception)
                 {
