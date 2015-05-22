@@ -12,6 +12,8 @@ namespace NOpt
 
     // TODO document enums. See Enum.Parse help
 
+    // TODO mutual exclusive
+
     public static class NOpt
     {
         private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);

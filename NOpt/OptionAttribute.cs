@@ -55,5 +55,7 @@ namespace NOpt
         public char? ShortName { get; set; }
 
         public string LongName { get; set; }
+
+        public string MutuallyExclusive { get; set; }
     }
 }
