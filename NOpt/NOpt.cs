@@ -274,7 +274,7 @@ namespace NOpt
                     if (f.FieldType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    return AssignValueTo(opt, f, value);
+                    return AssignValueTo(opt, f, true);
                 }
                 else if(memberInfo is PropertyInfo)
                 {
@@ -283,7 +283,7 @@ namespace NOpt
                     if (p.PropertyType != typeof(bool))
                         return $"Option -{shortName} should have a value";
 
-                    return AssignValueTo(opt, p, value);
+                    return AssignValueTo(opt, p, true);
                 }
                 else
                 {
