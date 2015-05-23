@@ -59,6 +59,14 @@
     <Compile Include="EnumTest.cs" />
     <Compile Include="Git\Options\Add.cs" />
     <Compile Include="Git\Options\Am.cs" />
+    <Compile Include="Git\Options\Archive.cs" />
+    <Compile Include="Git\Options\Bisect.cs" />
+    <Compile Include="Git\Options\Branch.cs" />
+    <Compile Include="Git\Options\Bundle.cs" />
+    <Compile Include="Git\Options\Checkout.cs" />
+    <Compile Include="Git\Options\CherryPick.cs" />
+    <Compile Include="Git\Options\Citool.cs" />
+    <Compile Include="Git\Options\Clean.cs" />
     <Compile Include="Git\Options\Options.cs" />
     <Compile Include="Git\GitTest.cs" />
     <Compile Include="OptionsTest.cs" />
