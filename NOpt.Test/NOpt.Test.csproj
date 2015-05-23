@@ -84,6 +84,7 @@
     <Compile Include="Git\Options\Options.cs" />
     <Compile Include="Git\GitTest.cs" />
     <Compile Include="Git\Options\Pull.cs" />
+    <Compile Include="Git\Options\Push.cs" />
     <Compile Include="Git\Options\Rebase.cs" />
     <Compile Include="Git\Options\Reset.cs" />
     <Compile Include="Git\Options\Revert.cs" />
