@@ -63,8 +63,9 @@ namespace NOpt.Test.Git.Options
         [Verb("add")]
         public Add add;
 
-        [Verb("Am")]
+        [Verb("am")]
         public Am am;
+
         // TODO command <args>
     }
 }
