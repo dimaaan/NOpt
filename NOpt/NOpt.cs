@@ -44,86 +44,89 @@ namespace NOpt
             // TODO --a=b syntax
 
             string errorMessage = null;
-            int valuesCount = 0, count = 0;
 
-            var e = args.GetEnumerator();
-            while (e.MoveNext())
+            string firstArg = args.FirstOrDefault();
+
+            if (hasVerb && firstArg != null && attributes.ContainsKey(firstArg)) // check first argument is a verb
             {
-                if (e.Current.StartsWith("--")) // in case "program --file file.txt"
+                MemberInfo verbMember = attributes[firstArg];
+
+                if (verbMember is FieldInfo)
                 {
-                    if(e.Current.Length < 3)
-                    {
-                        errorMessage = "Error: dash without name. Use '--long-name'";
-                        break;
-                    }
+                    FieldInfo f = (FieldInfo)verbMember;
+                    Type verbType = f.FieldType;
+                    object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
 
-                    string name = e.Current.Substring(2);
-                    string val = e.MoveNext() ? e.Current : null;
-
-                    setOption(opt, attributes, name, val);
+                    errorMessage = Parse(args.Skip(1), verbInstance);
+                    if (errorMessage != null)
+                        return errorMessage;
+                    f.SetValue(opt, verbInstance);
                 }
-                else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
+                else if (verbMember is PropertyInfo)
                 {
-                    if(e.Current.Length == 2) // in case "program -f"
+                    PropertyInfo p = (PropertyInfo)verbMember;
+                    Type verbType = p.PropertyType;
+                    object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
+
+                    errorMessage = Parse(args.Skip(1), verbInstance);
+                    if (errorMessage != null)
+                        return errorMessage;
+                    p.SetValue(opt, verbInstance);
+                }
+                else
+                {
+                    throw new ArgumentException("VerbAttribute should be appiled to fields and properties");
+                }
+            }
+            else // no verbs
+            {
+                var e = args.GetEnumerator();
+                int valuesCount = 0;
+
+                while (e.MoveNext())
+                {
+                    if (e.Current.StartsWith("--")) // in case "program --file file.txt"
                     {
-                        char name = e.Current[1];
+                        if (e.Current.Length < 3)
+                        {
+                            errorMessage = "Error: dash without name. Use '--long-name'";
+                            break;
+                        }
+
+                        string name = e.Current.Substring(2);
                         string val = e.MoveNext() ? e.Current : null;
 
-                        errorMessage = setOption(opt, attributes, name, val);
-                        if (errorMessage != null)
+                        setOption(opt, attributes, name, val);
+                    }
+                    else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
+                    {
+                        if (e.Current.Length == 2) // in case "program -f"
+                        {
+                            char name = e.Current[1];
+                            string val = e.MoveNext() ? e.Current : null;
+
+                            errorMessage = setOption(opt, attributes, name, val);
+                            if (errorMessage != null)
+                                break;
+                        }
+                        else if (e.Current.Length > 2) // in case "program -abc"
+                        {
+                            char name;
+                            for (int i = 1; i < e.Current.Length; i++)
+                            {
+                                name = e.Current[i];
+                                errorMessage = setOption(opt, attributes, name, null);
+                                if (errorMessage != null)
+                                    break;
+                            }
+                        }
+                        else // in case "program -"
+                        {
+                            errorMessage = "Error: dash without name. Use '-s'";
                             break;
-                    }
-                    else if(e.Current.Length > 2) // in case "program -abc"
-                    {
-                        char name;
-                        for (int i = 1; i < e.Current.Length; i++)
-                        {
-                            name = e.Current[i];
-                            errorMessage = setOption(opt, attributes, name, null);
-                            if (errorMessage != null)
-                                break;
                         }
                     }
-                    else // in case "program -"
-                    {
-                        errorMessage = "Error: dash without name. Use '-s'";
-                        break;
-                    }
-                }
-                else // in case "program file.txt"
-                {
-                    if(count == 0 && valuesCount == 0 && hasVerb && attributes.ContainsKey(e.Current)) // maybe this is a verb?
-                    {
-                        MemberInfo verbMember = attributes[e.Current];
-
-                        if(verbMember is FieldInfo)
-                        {
-                            FieldInfo f = (FieldInfo)verbMember;
-                            Type verbType = f.FieldType;
-                            object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
-
-                            errorMessage = Parse(args.Skip(1), verbInstance);
-                            if (errorMessage != null)
-                                break;
-                            f.SetValue(opt, verbInstance);
-                        }
-                        else if(verbMember is PropertyInfo)
-                        {
-                            PropertyInfo p = (PropertyInfo)verbMember;
-                            Type verbType = p.PropertyType;
-                            object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
-
-                            errorMessage = Parse(args.Skip(1), verbInstance);
-                            if (errorMessage != null)
-                                break;
-                            p.SetValue(opt, verbInstance);
-                        }
-                        else
-                        {
-                            throw new ArgumentException("VerbAttribute should be appiled to fields and properties");
-                        }
-                    }
-                    else // its a value
+                    else // in case "program file.txt"
                     {
                         errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
 
@@ -131,8 +134,6 @@ namespace NOpt
                             break;
                     }
                 }
-
-                count++;
             }
 
             return errorMessage;
