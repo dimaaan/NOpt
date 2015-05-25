@@ -24,17 +24,36 @@ namespace NOpt.Test
                 public bool opt3; // will be null
             }
 
-            Options opt;
-
-            public ThreeShortOption()
+            private Options parse(params string[] args)
             {
-                opt = NOpt.Parse<Options>(new string[] { "-abc" });
+                return NOpt.Parse<Options>(args);
             }
 
             [Fact]
-            public void check()
+            public void checkNull()
             {
+
+            }
+
+            [Fact]
+            public void checkabc()
+            {
+                Options opt = parse("-abc");
                 Assert.True(opt.opt1 && opt.opt2 && opt.opt3);
+            }
+
+            [Fact]
+            public void checkDublicate()
+            {
+                Options opt = parse("-aa");
+                Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
+            }
+
+            [Fact]
+            public void checkDublicateShortSyntax()
+            {
+                Options opt = parse(new string[] { "-a", "-a" });
+                Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
             }
         }
 
@@ -44,24 +63,31 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('f', LongName = "file")]
-                public string opt;
+                public string file;
 
                 [Option("action")]
-                public bool opt2;
+                public bool action;
             }
 
-            Options opt;
-
-            public LongOption()
+            private Options parse(params string[] args)
             {
-                opt = NOpt.Parse<Options>(new string[] { "--file", "readme.txt", "--action" });
+                return NOpt.Parse<Options>(args);
             }
 
             [Fact]
             public void check()
             {
-                Assert.Equal("readme.txt", opt.opt);
-                Assert.True(opt.opt2);
+                Options opt = parse("--file", "readme.txt", "--action");
+                Assert.Equal("readme.txt", opt.file);
+                Assert.True(opt.action);
+            }
+
+            [Fact]
+            public void checkDublicate()
+            {
+                Options opt = parse("--file", "--file");
+                Assert.Equal("--file", opt.file);
+                Assert.False(opt.action);
             }
         }
     }
