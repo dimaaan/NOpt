@@ -85,6 +85,9 @@ namespace NOpt
 
                 while (e.MoveNext())
                 {
+                    if (e.Current == null)
+                        continue;
+
                     if (e.Current.StartsWith("--")) // in case "program --file file.txt"
                     {
                         if (e.Current.Length < 3)
