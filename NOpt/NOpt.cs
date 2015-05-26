@@ -30,93 +30,93 @@ namespace NOpt
 
         private static string Parse(IEnumerable<string> args, object opt)
         {
+            string errorMessage;
             bool hasVerb;
             Dictionary<object, FieldInfo> attributes = NOptAttributes.Discover(opt.GetType(), out hasVerb);
+            string firstArg = args.FirstOrDefault();
 
-            return TokenizeUnixStyle(args, opt, attributes, hasVerb);
+            // check first argument is a verb
+            if (hasVerb && firstArg != null && attributes.ContainsKey(firstArg))
+            {
+                FieldInfo field = attributes[firstArg];
+                object verbInstance = Activator.CreateInstance(field.FieldType); // TODO handle errors
+
+                errorMessage = Parse(args.Skip(1), verbInstance);
+
+                if (errorMessage == null)
+                    field.SetValue(opt, verbInstance);
+            }
+            else
+            {
+                errorMessage = TokenizeUnixStyle(args, opt, attributes);
+            }
+
+            return errorMessage;
         }
 
         
 
         /// <returns>null if success, otherwise error message</returns>
-        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes, bool hasVerb)
+        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes)
         {
             // TODO --a=b syntax
 
             string errorMessage = null;
+            var e = args.GetEnumerator();
+            int valuesCount = 0;
 
-            string firstArg = args.FirstOrDefault();
-
-            if (hasVerb && firstArg != null && attributes.ContainsKey(firstArg)) // check first argument is a verb
+            while (e.MoveNext())
             {
-                FieldInfo field = attributes[firstArg];
-                Type fieldType = field.FieldType;
-                object verbInstance = Activator.CreateInstance(fieldType); // TODO handle errors
+                if (e.Current == null)
+                    continue;
 
-                errorMessage = Parse(args.Skip(1), verbInstance);
-                if (errorMessage != null)
-                    return errorMessage;
-
-                field.SetValue(opt, verbInstance);
-            }
-            else // no verbs
-            {
-                var e = args.GetEnumerator();
-                int valuesCount = 0;
-
-                while (e.MoveNext())
+                if (e.Current.StartsWith("--")) // in case "program --file file.txt"
                 {
-                    if (e.Current == null)
-                        continue;
-
-                    if (e.Current.StartsWith("--")) // in case "program --file file.txt"
+                    if (e.Current.Length < 3)
                     {
-                        if (e.Current.Length < 3)
-                        {
-                            errorMessage = "Error: dash without name. Use '--long-name'";
-                            break;
-                        }
+                        errorMessage = "Error: dash without name. Use '--long-name'";
+                        break;
+                    }
 
-                        string name = e.Current.Substring(2);
+                    string name = e.Current.Substring(2);
+                    string val = e.MoveNext() ? e.Current : null;
+
+                    setOption(opt, attributes, name, val);
+                }
+                else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
+                {
+                    if (e.Current.Length == 2) // in case "program -f"
+                    {
+                        char name = e.Current[1];
                         string val = e.MoveNext() ? e.Current : null;
 
-                        setOption(opt, attributes, name, val);
-                    }
-                    else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
-                    {
-                        if (e.Current.Length == 2) // in case "program -f"
-                        {
-                            char name = e.Current[1];
-                            string val = e.MoveNext() ? e.Current : null;
-
-                            errorMessage = setOption(opt, attributes, name, val);
-                            if (errorMessage != null)
-                                break;
-                        }
-                        else if (e.Current.Length > 2) // in case "program -abc"
-                        {
-                            char name;
-                            for (int i = 1; i < e.Current.Length; i++)
-                            {
-                                name = e.Current[i];
-                                errorMessage = setOption(opt, attributes, name, null);
-                                if (errorMessage != null)
-                                    break;
-                            }
-                        }
-                        else // in case "program -"
-                        {
-                            errorMessage = "Error: dash without name. Use '-s'";
-                            break;
-                        }
-                    }
-                    else // in case "program file.txt"
-                    {
-                        errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
-
+                        errorMessage = setOption(opt, attributes, name, val);
                         if (errorMessage != null)
                             break;
                     }
+                    else if (e.Current.Length > 2) // in case "program -abc"
+                    {
+                        char name;
+                        for (int i = 1; i < e.Current.Length; i++)
+                        {
+                            name = e.Current[i];
+                            errorMessage = setOption(opt, attributes, name, null);
+                            if (errorMessage != null)
+                                break;
+                        }
+                    }
+                    else // in case "program -"
+                    {
+                        errorMessage = "Error: dash without name. Use '-s'";
+                        break;
+                    }
+                }
+                else // in case "program file.txt"
+                {
+                    errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
+
+                    if (errorMessage != null)
+                        break;
                 }
             }
 
