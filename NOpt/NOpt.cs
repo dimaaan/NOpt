@@ -31,7 +31,7 @@ namespace NOpt
         private static string Parse(IEnumerable<string> args, object opt)
         {
             bool hasVerb;
-            Dictionary<object, MemberInfo> attributes = NOptAttributes.Discover(opt.GetType(), out hasVerb);
+            Dictionary<object, FieldInfo> attributes = NOptAttributes.Discover(opt.GetType(), out hasVerb);
 
             return TokenizeUnixStyle(args, opt, attributes, hasVerb);
         }
@@ -39,7 +39,7 @@ namespace NOpt
         
 
         /// <returns>null if success, otherwise error message</returns>
-        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, MemberInfo> attributes, bool hasVerb)
+        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes, bool hasVerb)
         {
             // TODO --a=b syntax
 
@@ -49,34 +49,15 @@ namespace NOpt
 
             if (hasVerb && firstArg != null && attributes.ContainsKey(firstArg)) // check first argument is a verb
             {
-                MemberInfo verbMember = attributes[firstArg];
+                FieldInfo field = attributes[firstArg];
+                Type fieldType = field.FieldType;
+                object verbInstance = Activator.CreateInstance(fieldType); // TODO handle errors
 
-                if (verbMember is FieldInfo)
-                {
-                    FieldInfo f = (FieldInfo)verbMember;
-                    Type verbType = f.FieldType;
-                    object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
+                errorMessage = Parse(args.Skip(1), verbInstance);
+                if (errorMessage != null)
+                    return errorMessage;
 
-                    errorMessage = Parse(args.Skip(1), verbInstance);
-                    if (errorMessage != null)
-                        return errorMessage;
-                    f.SetValue(opt, verbInstance);
-                }
-                else if (verbMember is PropertyInfo)
-                {
-                    PropertyInfo p = (PropertyInfo)verbMember;
-                    Type verbType = p.PropertyType;
-                    object verbInstance = Activator.CreateInstance(verbType); // TODO handle errors
-
-                    errorMessage = Parse(args.Skip(1), verbInstance);
-                    if (errorMessage != null)
-                        return errorMessage;
-                    p.SetValue(opt, verbInstance);
-                }
-                else
-                {
-                    throw new ArgumentException("VerbAttribute should be appiled to fields and properties");
-                }
+                field.SetValue(opt, verbInstance);
             }
             else // no verbs
             {
@@ -142,117 +123,63 @@ namespace NOpt
             return errorMessage;
         }
 
-        private static string setOption(object opt, Dictionary<object, MemberInfo> attributes, string longName, string value)
+        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string longName, string value)
         {
-            MemberInfo memberInfo;
+            FieldInfo fieldInfo;
 
-            if (!attributes.TryGetValue(longName, out memberInfo))
+            if (!attributes.TryGetValue(longName, out fieldInfo))
                 return $"Invalid option: --{value}";
 
             if(value == null)
             {
-                if (memberInfo is FieldInfo)
-                {
-                    FieldInfo f = (FieldInfo)memberInfo;
+                if (fieldInfo.FieldType != typeof(bool))
+                    return $"Option --{longName} should have a value";
 
-                    if (f.FieldType != typeof(bool))
-                        return $"Option --{longName} should have a value";
-
-                    return AssignToField(opt, f, true);
-                }
-                else if (memberInfo is PropertyInfo)
-                {
-                    PropertyInfo p = (PropertyInfo)memberInfo;
-
-                    if (p.PropertyType != typeof(bool))
-                        return $"Option --{longName} should have a value";
-
-                    return AssignToProperty(opt, p, true);
-                }
-                else
-                {
-                    throw new ArgumentException("OptionAttribute should be appiled only to fields or properties", memberInfo.Name);
-                }
+                return AssignToField(opt, fieldInfo, true);
             }
             else
             {
                 if (String.IsNullOrEmpty(value))
-                    return $"Value for {memberInfo.Name} is empty string";
+                    return $"Value for {fieldInfo.Name} is empty string";
 
-                return AssignToClassMember(opt, memberInfo, value);
+                return AssignToField(opt, fieldInfo, value);
             }
         }
 
-        private static string setOption(object opt, Dictionary<object, MemberInfo> attributes, char shortName, string value)
+        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, char shortName, string value)
         {
-            MemberInfo memberInfo;
+            FieldInfo fieldInfo;
 
-            if (!attributes.TryGetValue(shortName, out memberInfo))
+            if (!attributes.TryGetValue(shortName, out fieldInfo))
                 return $"Invalid option: -{value}";
 
             if(value == null)
             {
-                if(memberInfo is FieldInfo)
-                {
-                    FieldInfo f = (FieldInfo)memberInfo;
+                if (fieldInfo.FieldType != typeof(bool))
+                    return $"Option -{shortName} should have a value";
 
-                    if (f.FieldType != typeof(bool))
-                        return $"Option -{shortName} should have a value";
-
-                    return AssignToField(opt, f, true);
-                }
-                else if(memberInfo is PropertyInfo)
-                {
-                    PropertyInfo p = (PropertyInfo)memberInfo;
-
-                    if (p.PropertyType != typeof(bool))
-                        return $"Option -{shortName} should have a value";
-
-                    return AssignToProperty(opt, p, true);
-                }
-                else
-                {
-                    throw new ArgumentException("OptionAttribute should be appiled only to fields or properties", memberInfo.Name);
-                }
+                return AssignToField(opt, fieldInfo, true);
             }
             else
             {
                 if (String.IsNullOrEmpty(value))
-                    return $"Value for {memberInfo.Name} is empty string";
+                    return $"Value for {fieldInfo.Name} is empty string";
 
-                return AssignToClassMember(opt, memberInfo, value);
+                return AssignToField(opt, fieldInfo, value);
             }
         }
 
-        private static string setValue(object opt, Dictionary<object, MemberInfo> attributes, int index, string value)
+        private static string setValue(object opt, Dictionary<object, FieldInfo> attributes, int index, string value)
         {
-            MemberInfo memberInfo;
+            FieldInfo fieldInfo;
 
-            if (!attributes.TryGetValue(index, out memberInfo))
+            if (!attributes.TryGetValue(index, out fieldInfo))
                 return $"Invalid argument: {value}";
 
             if (String.IsNullOrEmpty(value))
-                return $"Value for {memberInfo.Name} is null or empty string";
+                return $"Value for {fieldInfo.Name} is null or empty string";
 
-            return AssignToClassMember(opt, memberInfo, value);
-        }
-
-
-
-        private static string AssignToClassMember(object opt, MemberInfo m, object value)
-        {
-            if(m is FieldInfo)
-            {
-                return AssignToField(opt, (FieldInfo)m, value);
-            }
-            else if (m is PropertyInfo)
-            {
-                return AssignToProperty(opt, (PropertyInfo)m, value);
-            }
-            else
-            {
-                throw new ArgumentException("NOpt attributes should be appiled only to fields or properties", m.Name);
-            }
+            return AssignToField(opt, fieldInfo, value);
         }
 
         private static string AssignToField(object opt, FieldInfo f, object value)
@@ -274,31 +201,6 @@ namespace NOpt
             else
             {
                 f.SetValue(opt, value);
-            }
-
-            return null;
-        }
-
-        private static string AssignToProperty(object opt, PropertyInfo p, object value)
-        {
-            if (p.PropertyType.IsEnum)
-            {
-                object enumValue;
-
-                try
-                {
-                    enumValue = Enum.Parse(p.PropertyType, (string) value, true);
-                }
-                catch (Exception)
-                {
-                    return $"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(p.PropertyType))}";
-                }
-
-                p.SetValue(opt, enumValue);
-            }
-            else
-            {
-                p.SetValue(opt, value);
             }
 
             return null;

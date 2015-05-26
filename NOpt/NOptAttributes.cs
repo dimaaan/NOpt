@@ -18,17 +18,17 @@ namespace NOpt
         /// <returns>
         /// Dictionary with keys: char for shortname, string for longname and verb, int for unbounded value index
         /// </returns>
-        public static Dictionary<object, MemberInfo> Discover(Type optionType, out bool hasVerb)
+        public static Dictionary<object, FieldInfo> Discover(Type optionType, out bool hasVerb)
         {
             hasVerb = false;
 
-            Dictionary<object, MemberInfo> attributes = new Dictionary<object, MemberInfo>();
+            var attributes = new Dictionary<object, FieldInfo>();
 
-            foreach (MemberInfo member in optionType.GetMembers())
+            foreach (FieldInfo field in optionType.GetFields())
             {
-                var valueAttributes = member.GetCustomAttributes<ValueAttribute>();
-                var optionsAttributes = member.GetCustomAttributes<OptionAttribute>();
-                var verbAttributes = member.GetCustomAttributes<VerbAttribute>();
+                var valueAttributes = field.GetCustomAttributes<ValueAttribute>();
+                var optionsAttributes = field.GetCustomAttributes<OptionAttribute>();
+                var verbAttributes = field.GetCustomAttributes<VerbAttribute>();
                 int attrCount =
                     (valueAttributes.Any() ? 1 : 0) +
                     (optionsAttributes.Any() ? 1 : 0) +
@@ -36,7 +36,7 @@ namespace NOpt
 
                 if (attrCount > 1)
                     throw new ArgumentException(
-                        "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class member", member.Name);
+                        "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class field", field.Name);
 
                 if (valueAttributes.Any())
                 {
@@ -44,9 +44,9 @@ namespace NOpt
                     {
                         if (attributes.ContainsKey(attr.Index))
                             throw new ArgumentException(
-                                $"Two class members marked as ValueAttribute with same index: '{attributes[attr.Index].Name}' and {member.Name}");
+                                $"Two class fields marked as ValueAttribute with same index: '{attributes[attr.Index].Name}' and {field.Name}");
 
-                        attributes[attr.Index] = member;
+                        attributes[attr.Index] = field;
                     }
                 }
 
@@ -57,24 +57,24 @@ namespace NOpt
                         if (attr.ShortName != null)
                         {
                             if (!char.IsLetter(attr.ShortName.Value))
-                                throw new ArgumentException("Short name must be letter", member.Name);
+                                throw new ArgumentException("Short name must be letter", field.Name);
 
                             if (attributes.ContainsKey(attr.ShortName.Value))
                                 throw new ArgumentException(
-                                    $"Two class members marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {member.Name}");
+                                    $"Two class fields marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {field.Name}");
 
-                            attributes[attr.ShortName.Value] = member;
+                            attributes[attr.ShortName.Value] = field;
                         }
                         if (attr.LongName != null)
                         {
                             if (!validOptionName.IsMatch(attr.LongName))
-                                throw new ArgumentException("Long name invalid", member.Name);
+                                throw new ArgumentException("Long name invalid", field.Name);
 
                             if (attributes.ContainsKey(attr.LongName))
                                 throw new ArgumentException(
-                                    $"Two class members marked with same long name: '{attributes[attr.LongName].Name}' and {member.Name}");
+                                    $"Two class fields marked with same long name: '{attributes[attr.LongName].Name}' and {field.Name}");
 
-                            attributes[attr.LongName] = member;
+                            attributes[attr.LongName] = field;
                         }
                     }
                 }
@@ -85,9 +85,9 @@ namespace NOpt
                     {
                         if (attributes.ContainsKey(attr.Name))
                             throw new ArgumentException(
-                                $"Two class members marked with same long name: '{attributes[attr.Name].Name}' and {member.Name}");
+                                $"Two class fields marked with same long name: '{attributes[attr.Name].Name}' and {field.Name}");
 
-                        attributes[attr.Name] = member;
+                        attributes[attr.Name] = field;
                         hasVerb = true;
                     }
                 }
