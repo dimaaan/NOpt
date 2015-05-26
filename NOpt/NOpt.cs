@@ -14,18 +14,28 @@ namespace NOpt
 
     public static class NOpt
     {
+        // TODO document exceptions list
+        public static T Parse<T>(string[] args) where T : new()
+        {
+            T options;
+            string errorMessage;
+            bool res = TryParse<T>(args, out options, out errorMessage);
 
-        // TODO exceptions list
-        public static T Parse<T>(string[] args) where T: new()
+            if(!res)
+                throw new FormatException(errorMessage);
+
+            return options;
+        }
+
+        public static bool TryParse<T>(string[] args, out T options, out string errorMessage) where T: new()
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            T opt = new T();
+            options = new T();
+            errorMessage = Parse(args, options);
 
-            Parse(args, opt);
-
-            return opt;
+            return errorMessage != null;
         }
 
 
@@ -33,7 +43,7 @@ namespace NOpt
         {
             string errorMessage;
             bool hasVerb;
-            Dictionary<object, FieldInfo> attributes = NOptAttributes.Discover(opt.GetType(), out hasVerb);
+            Dictionary<object, FieldInfo> attributes = AttributeDiscover.Discover(opt.GetType(), out hasVerb);
             string firstArg = args.FirstOrDefault();
 
             // check first argument is a verb

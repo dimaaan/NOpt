@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace NOpt
 {
-    internal static class NOptAttributes
+    internal static class AttributeDiscover
     {
         private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);
 
