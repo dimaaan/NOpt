@@ -16,7 +16,7 @@ namespace NOpt
         /// <param name="optionType">Option class or struct type</param>
         /// <param name="hasVerb">return true, if verb is present</param>
         /// <returns>
-        /// Dictionary with keys: char for shortname, string for longname and verb, int for unbounded value index
+        /// Dictionary with keys: string for shortnames, longnames and verb, int for unbounded value index
         /// </returns>
         public static Dictionary<object, FieldInfo> Discover(Type optionType, out bool hasVerb)
         {
@@ -59,11 +59,13 @@ namespace NOpt
                             if (!char.IsLetter(attr.ShortName.Value))
                                 throw new ArgumentException("Short name must be letter", field.Name);
 
-                            if (attributes.ContainsKey(attr.ShortName.Value))
+                            string strShortName = attr.ShortName.Value.ToString();
+
+                            if (attributes.ContainsKey(strShortName))
                                 throw new ArgumentException(
                                     $"Two class fields marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {field.Name}");
 
-                            attributes[attr.ShortName.Value] = field;
+                            attributes[strShortName] = field;
                         }
                         if (attr.LongName != null)
                         {

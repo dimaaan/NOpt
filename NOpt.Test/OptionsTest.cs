@@ -116,5 +116,20 @@ namespace NOpt.Test
                 Assert.False(opt.action);
             }
         }
+
+        public class DublicateShortLongNames
+        {
+            public class Options
+            {
+                [Option('f', LongName = "f")]
+                public readonly string file;
+            }
+
+            [Fact]
+            public void checkDublicate()
+            {
+                Assert.Throws<ArgumentException>(() => NOpt.Parse<Options>(new string[] { "--file", "--file" }));
+            }
+        }
     }
 }
