@@ -31,9 +31,7 @@ namespace NOpt
     /// }
     /// </code>
     /// </example>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property,
-        AllowMultiple = true,
-        Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
     public sealed class OptionAttribute : Attribute
     {
         public OptionAttribute(char shortName)

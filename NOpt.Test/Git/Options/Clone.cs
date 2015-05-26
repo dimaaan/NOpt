@@ -18,63 +18,63 @@ namespace NOpt.Test.Git.Options
     public class Clone
     {
         [Option("template")]
-        public string template { get; set; }
+        public readonly string template;
 
         [Option('l', "local")]
-        public bool local { get; set; }
+        public readonly bool local;
 
         [Option('s', "shared")]
-        public bool shared { get; set; }
+        public readonly bool shared;
 
         [Option("no-hardlinks")]
-        public bool noHardlinks { get; set; }
+        public readonly bool noHardlinks;
 
         [Option('q', "quiet")]
-        public bool quiet { get; set; }
+        public readonly bool quiet;
 
         [Option('n', "no-checkout")]
-        public bool noCheckout { get; set; }
+        public readonly bool noCheckout;
 
         [Option("bare")]
-        public bool bare { get; set; }
+        public readonly bool bare;
 
         [Option("mirror")]
-        public bool mirror { get; set; }
+        public readonly bool mirror;
 
         [Option('o', "origin")]
-        public string origin { get; set; }
+        public readonly string origin;
 
         [Option('b', "branch")]
-        public string branch { get; set; }
+        public readonly string branch;
 
         [Option('u', "upload-pack")]
-        public string uploadPack { get; set; }
+        public readonly string uploadPack;
 
         [Option("reference")]
-        public string reference { get; set; }
+        public readonly string reference;
 
         [Option("separate-git-dir")]
-        public string separateGitDir { get; set; }
+        public readonly string separateGitDir;
 
         [Option("depth")]
-        public uint depth { get; set; }
+        public readonly uint depth;
 
         [Option("single-branch", MutuallyExclusive = "single-branch")]
-        public bool singleBranch { get; set; }
+        public readonly bool singleBranch;
 
         [Option("no-single-branch", MutuallyExclusive = "single-branch")]
-        public bool noSingleBranch { get; set; }
+        public readonly bool noSingleBranch;
 
         [Option("recursive", MutuallyExclusive = "recursive")]
-        public bool recursive { get; set; }
+        public readonly bool recursive;
 
         [Option("recurse-submodules", MutuallyExclusive = "recursive")]
-        public bool recursiveSubmodules { get; set; }
+        public readonly bool recursiveSubmodules;
 
         [Value(0)]
-        public string repository { get; set; }
+        public readonly string repository;
 
         [Value(1)]
-        public string directory { get; set; }
+        public readonly string directory;
     }
 }

@@ -11,39 +11,39 @@ namespace NOpt.Test.Git.Options
         public enum ConflictStyle { MERGE, DIFF3 };
 
         [Option('q', "quiet")]
-        public bool quiet { get; set; }
+        public readonly bool quiet;
 
         [Option('f', "force")]
-        public bool force { get; set; }
+        public readonly bool force;
 
         [Option('m', "merge")]
-        public bool merge { get; set; }
+        public readonly bool merge;
 
         [Option("detach")]
-        public bool detach { get; set; }
+        public readonly bool detach;
 
         [Option('b', MutuallyExclusive = "b")]
-        public bool b { get; set; }
+        public readonly bool b;
 
         [Option('B', MutuallyExclusive = "b")]
-        public bool B { get; set; }
+        public readonly bool B;
 
         [Option("orphan", MutuallyExclusive = "b")]
-        public bool orphan { get; set; }
+        public readonly bool orphan;
 
         [Option("ours", MutuallyExclusive = "whoms")]
-        public bool ours { get; set; }
+        public readonly bool ours;
 
         [Option("theirs", MutuallyExclusive = "whoms")]
-        public bool theirs { get; set; }
+        public readonly bool theirs;
 
         [Option("conflict", MutuallyExclusive = "whoms")]
-        public ConflictStyle conflict { get; set; } = ConflictStyle.MERGE;
+        public readonly ConflictStyle conflict=ConflictStyle.MERGE;
 
         [Option('p', "patch")]
-        public bool patch { get; set; }
+        public readonly bool patch;
 
         [Value(0)]
-        public string extras { get; set; }
+        public readonly string extras;
     }
 }

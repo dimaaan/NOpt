@@ -11,72 +11,72 @@ namespace NOpt.Test.Git.Options
         public class Start
         {
             [Option("no-checkout")]
-            public bool noCheckout { get; set; }
+            public readonly bool noCheckout;
 
             [Value(0)]
-            public string[] extra { get; set; }
+            public readonly string[] extra;
         }
 
         public class Bad
         {
             [Value(0)]
-            public string rev { get; set; }
+            public readonly string rev;
         }
 
         public class Good
         {
             [Value(0)]
-            public string[] rev { get; set; }
+            public readonly string[] rev;
         }
 
         public class Skip
         {
             [Value(0)]
-            public string[] revOrRange { get; set; }
+            public readonly string[] revOrRange;
         }
 
         public class Reset
         {
             [Value(0)]
-            public string[] commit { get; set; }
+            public readonly string[] commit;
         }
 
         public class Replay
         {
             [Value(0)]
-            public string logfile { get; set; }
+            public readonly string logfile;
         }
 
         public class Run
         {
             [Value(0)]
-            public string[] cmd { get; set; }
+            public readonly string[] cmd;
         }
 
         public enum Command { HELP, VISUALIZE, LOG }
 
         [Value(0)]
-        public Command cmd { get; set; }
+        public readonly Command cmd;
 
         [Verb("start")]
-        public Start start { get; set; }
+        public readonly Start start;
 
         [Verb("bad")]
-        public Start bad { get; set; }
+        public readonly Start bad;
 
         [Verb("good")]
-        public Start good { get; set; }
+        public readonly Start good;
 
         [Verb("skip")]
-        public Start skip { get; set; }
+        public readonly Start skip;
 
         [Verb("reset")]
-        public Start reset { get; set; }
+        public readonly Start reset;
 
         [Verb("replay")]
-        public Start replay { get; set; }
+        public readonly Start replay;
 
         [Verb("run")]
-        public Start run { get; set; }
+        public readonly Start run;
     }
 }

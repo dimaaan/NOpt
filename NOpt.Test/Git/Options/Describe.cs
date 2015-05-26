@@ -13,21 +13,21 @@ namespace NOpt.Test.Git.Options
     public class Describe
     {
         [Option("all")]
-        public bool all { get; set; }
+        public readonly bool all;
 
         [Option("tags")]
-        public bool tags { get; set; }
+        public readonly bool tags;
 
         [Option("contains")]
-        public bool contains { get; set; }
+        public readonly bool contains;
 
         [Option("abbrev")]
-        public int abbrev { get; set; }
+        public readonly int abbrev;
 
         [Option("dirty")]
-        public bool dirty { get; set; }
+        public readonly bool dirty;
 
         [Value(0)]
-        public string[] extra { get; set; }
+        public readonly  string[] extra;
     }
 }

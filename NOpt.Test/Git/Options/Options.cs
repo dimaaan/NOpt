@@ -16,37 +16,37 @@ namespace NOpt.Test.Git.Options
     public class Options
     {
         [Option("version")]
-        public bool version { get; set; }
+        public bool version;
 
         [Option("help")]
-        public bool help { get; set; }
+        public bool help;
 
         [Option('C')]
-        public string C { get; set; }
+        public string C;
 
         [Option('c')]
-        public string c { get; set; }
+        public string c;
 
         [Option("exec-path")]
-        public string execPath { get; set; }
+        public string execPath;
 
         [Option("html-path")]
-        public bool htmlPath { get; set; }
+        public bool htmlPath;
 
         [Option("man-path")]
-        public bool manPath { get; set; }
+        public bool manPath;
 
         [Option("info-path")]
-        public bool infoPath { get; set; }
+        public bool infoPath;
 
         [Option('p', "paginate")]
-        public bool p { get; set; }
+        public bool p;
 
         [Option("no-pager")]
-        public bool noPager { get; set; }
+        public bool noPager;
 
         [Option("no-replace-objects")]
-        public bool noReplaceObjects { get; set; }
+        public bool noReplaceObjects;
 
         [Option("bare")]
         public bool bare;

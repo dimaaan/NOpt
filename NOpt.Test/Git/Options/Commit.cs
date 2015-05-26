@@ -21,87 +21,87 @@ namespace NOpt.Test.Git.Options
         public enum CleanUpMode { STRIP, WHITESPACE, VERBATIM, SCISSORS, DEFAULT };
 
         [Option('a', "all", MutuallyExclusive = "a")]
-        public bool all { get; set; }
+        public readonly bool all;
 
         [Option("interactive", MutuallyExclusive = "a")]
-        public bool interactive { get; set; }
+        public readonly bool interactive;
 
         [Option('p', "patch", MutuallyExclusive = "a")]
-        public bool patch { get; set; }
+        public readonly bool patch;
 
         [Option('s', "signoff")]
-        public bool signoff { get; set; }
+        public readonly bool signoff;
 
         [Option('v', "verbose")]
-        public bool verbose { get; set; }
+        public readonly bool verbose;
 
         [Option('u', "untracked-files")]
-        public UntrackedFilesMode untrackedFiles { get; set; } = UntrackedFilesMode.ALL;
+        public readonly UntrackedFilesMode untrackedFiles=UntrackedFilesMode.ALL;
 
         [Option("amend")]
-        public bool amend { get; set; }
+        public readonly bool amend;
 
         [Option("dry-run")]
-        public bool dryRun { get; set; }
+        public readonly bool dryRun;
 
         [Option('c', "reedit-message", MutuallyExclusive = "commit")]
-        public string reeditMessage { get; set; }
+        public readonly string reeditMessage;
 
         [Option('C', "reuse-message", MutuallyExclusive = "commit")]
-        public string reuseMessage { get; set; }
+        public readonly string reuseMessage;
 
         [Option("fixup", MutuallyExclusive = "commit")]
-        public string fixup { get; set; }
+        public readonly string fixup;
 
         [Option("squash", MutuallyExclusive = "commit")]
-        public string squash { get; set; }
+        public readonly string squash;
 
         [Option('F', "file", MutuallyExclusive = "file")]
-        public string file { get; set; }
+        public readonly string file;
 
         [Option('m', "message", MutuallyExclusive = "file")]
-        public string message { get; set; }
+        public readonly string message;
 
         [Option("reset-author")]
-        public bool resetAuthor { get; set; }
+        public readonly bool resetAuthor;
 
         [Option("allow-empty")]
-        public bool allowEmpty { get; set; }
+        public readonly bool allowEmpty;
 
         [Option("allow-empty-message")]
-        public bool allowEmptyMessage { get; set; }
+        public readonly bool allowEmptyMessage;
 
         [Option('n', "no-verify")]
-        public bool noVerify { get; set; }
+        public readonly bool noVerify;
 
         [Option('e', "edit")]
-        public bool edit { get; set; }
+        public readonly bool edit;
 
         [Option("author")]
-        public string author { get; set; }
+        public readonly string author;
 
         [Option("date")]
-        public string date { get; set; }
+        public readonly string date;
 
         [Option("cleanup")]
-        public CleanUpMode cleanup { get; set; }
+        public readonly CleanUpMode cleanup;
 
         [Option("status")]
-        public bool status { get; set; }
+        public readonly bool status;
 
         [Option("no-status")]
-        public bool noStatus { get; set; }
+        public readonly bool noStatus;
 
         [Option('i', "include", MutuallyExclusive = "include")]
-        public bool include { get; set; }
+        public readonly bool include;
 
         [Option('o', "only", MutuallyExclusive = "include")]
-        public bool only { get; set; }
+        public readonly bool only;
 
         [Option('S', "gpg-sign")]
-        public string gpgSign { get; set; }
+        public readonly string gpgSign;
 
         [Value(0)]
-        public string[] files { get; set; }
+        public readonly string[] files;
     }
 }

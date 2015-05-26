@@ -14,16 +14,16 @@ namespace NOpt.Test
             public class Options4
             {
                 [Value(0)]
-                public string opt1; // will be "file1"
+                public readonly string opt1; // will be "file1"
 
                 [Value(1)]
-                public string opt2; // will be "file2"
+                public readonly string opt2; // will be "file2"
 
                 [Value(2)]
-                public string opt3; // will be null
+                public readonly string opt3; // will be null
 
                 [Value(3)]
-                public string opt4 = "default value"; // will be "default"
+                public readonly string opt4 = "default value"; // will be "default"
             }
 
             [Fact]

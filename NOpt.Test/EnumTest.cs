@@ -20,7 +20,7 @@ namespace NOpt.Test
                 }
 
                 [Value(0)]
-                public Actions actions;
+                public readonly Actions actions;
             }
 
             Options opt;

@@ -11,46 +11,46 @@ namespace NOpt.Test.Git.Options
         public class Create
         {
             [Value(0)]
-            public string file { get; set; }
+            public readonly string file;
 
             [Value(1)]
-            public string[] gitRevListArgs { get; set; }
+            public readonly string[] gitRevListArgs;
         }
 
         public class Verify
         {
             [Value(0)]
-            public string file { get; set; }
+            public readonly string file;
         }
 
         public class ListHeads
         {
             [Value(0)]
-            public string file { get; set; }
+            public readonly string file;
 
             [Value(1)]
-            public string[] refname { get; set; }
+            public readonly string[] refname;
         }
 
         public class Unbundle
         {
             [Value(0)]
-            public string file { get; set; }
+            public readonly string file;
 
             [Value(1)]
-            public string[] refname { get; set; }
+            public readonly string[] refname;
         }
 
         [Verb("create")]
-        public Create create { get; set; }
+        public readonly Create create;
 
         [Verb("verify")]
-        public Verify verify { get; set; }
+        public readonly Verify verify;
 
         [Verb("list-heads")]
-        public ListHeads listHeads { get; set; }
+        public readonly ListHeads listHeads;
 
         [Verb("unbundle")]
-        public Unbundle unbundle { get; set; }
+        public readonly Unbundle unbundle;
     }
 }

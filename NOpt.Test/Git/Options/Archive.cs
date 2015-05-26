@@ -15,36 +15,36 @@ namespace NOpt.Test.Git.Options
     public class Archive
     {
         [Option("format")]
-        public string format;
+        public readonly string format;
 
         [Option('l', "list")]
-        public bool list;
+        public readonly bool list;
 
         [Option('v', "verbose")]
-        public bool verbose;
+        public readonly bool verbose;
 
         [Option("prefix")]
-        public string prefix;
+        public readonly string prefix;
 
         [Option('o', "output")]
-        public string output;
+        public readonly string output;
 
         [Option("worktree-attributes")]
-        public bool worktreeAttributes;
+        public readonly bool worktreeAttributes;
 
         [Option("remote")]
-        public string remote;
+        public readonly string remote;
 
         [Option("exec")]
-        public string exec;
+        public readonly string exec;
 
         [Option("tree-ish")]
-        public bool treeIsh;
+        public readonly bool treeIsh;
 
         [Value(0)]
-        public string path;
+        public readonly string path;
 
         [Value(1)]
-        public string[] extra;
+        public readonly string[] extra;
     }
 }

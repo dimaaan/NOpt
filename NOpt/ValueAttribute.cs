@@ -26,9 +26,7 @@ namespace NOpt
     /// </example>
     /// <remarks>
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, 
-        AllowMultiple = false, 
-        Inherited = true)]
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     public sealed class ValueAttribute : Attribute
     {
         /// <param name="index">Position in the command line. Starts from zero</param>

@@ -15,13 +15,13 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('a')]
-                public bool opt1; // will be "file1"
+                public readonly bool opt1; // will be "file1"
 
                 [Option('b')]
-                public bool opt2; // will be "file2"
+                public readonly bool opt2; // will be "file2"
 
                 [Option('c')]
-                public bool opt3; // will be null
+                public readonly bool opt3; // will be null
             }
 
             private Options parse(params string[] args)
@@ -63,10 +63,10 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('f', LongName = "file")]
-                public string file;
+                public readonly string file;
 
                 [Option("action")]
-                public bool action;
+                public readonly bool action;
             }
 
             private Options parse(params string[] args)

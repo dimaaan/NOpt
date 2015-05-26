@@ -20,99 +20,99 @@ namespace NOpt.Test.Git.Options
     public class Am
     {
         [Value(0)]
-        public bool mbox { get; set; }
+        public readonly bool mbox;
 
         [Option('s', "signoff")]
-        public bool signoff { get; set; }
+        public readonly bool signoff;
 
         [Option('k', "keep")]
-        public bool keep { get; set; }
+        public readonly bool keep;
 
         [Option("keep-non-patch")]
-        public bool keepNonPatch { get; set; }
+        public readonly bool keepNonPatch;
 
         [Option("keep-cr")]
-        public bool keepCr { get; set; }
+        public readonly bool keepCr;
 
         [Option("no-keep-cr")]
-        public bool noKeepCr { get; set; }
+        public readonly bool noKeepCr;
 
         [Option('c', "scissors")]
-        public bool scissors { get; set; }
+        public readonly bool scissors;
 
         [Option("no-scissors")]
-        public bool noScissors { get; set; }
+        public readonly bool noScissors;
 
         [Option('q', "quiet")]
-        public bool quiet { get; set; }
+        public readonly bool quiet;
 
         [Option('u', "utf8")]
-        public bool utf8 { get; set; }
+        public readonly bool utf8;
 
         [Option("no-utf8")]
-        public bool noUtf8 { get; set; }
+        public readonly bool noUtf8;
 
         [Option('3', "3way")]
-        public bool threeWay { get; set; }
+        public readonly bool threeWay;
 
         [Option("ignore-date")]
-        public bool ignoreDate { get; set; }
+        public readonly bool ignoreDate;
 
         [Option("ignore-space-change")]
-        public bool ignoreSpaceChange { get; set; }
+        public readonly bool ignoreSpaceChange;
 
         [Option("ignore-whitespace")]
-        public bool ignoreWhitespace { get; set; }
+        public readonly bool ignoreWhitespace;
 
         [Option("whitespace")]
-        public string whitespace { get; set; }
+        public readonly string whitespace;
 
         [Option('C')]
-        public string C { get; set; }
+        public readonly string C;
 
         [Option('p')]
-        public string p { get; set; }
+        public readonly string p;
 
         [Option("directory")]
-        public string directory { get; set; }
+        public readonly string directory;
 
         [Option("exclude")]
-        public string exclude { get; set; }
+        public readonly string exclude;
 
         [Option("include")]
-        public string include { get; set; }
+        public readonly string include;
 
         [Option("reject")]
-        public bool reject { get; set; }
+        public readonly bool reject;
 
         [Option("patch-format")]
-        public bool patchFormat { get; set; }
+        public readonly bool patchFormat;
 
         [Option('i', "interactive")]
-        public bool interactive { get; set; }
+        public readonly bool interactive;
 
         [Option("committer-date-is-author-date")]
-        public bool committerDateIsAuthorDate { get; set; }
+        public readonly bool committerDateIsAuthorDate;
 
         [Option("skip")]
-        public bool skip { get; set; }
+        public readonly bool skip;
 
         [Option('S')]
-        public string S { get; set; }
+        public readonly string S;
 
         [Option("gpg-sign")]
-        public string gpgSign { get; set; }
+        public readonly string gpgSign;
 
         [Option("continue")]
-        public bool @continue { get; set; }
+        public readonly bool @continue;
 
         [Option('r', "resolved")]
-        public bool resolved { get; set; }
+        public readonly bool resolved;
 
         [Option("resolvemsg")]
-        public string resolvemsg { get; set; }
+        public readonly string resolvemsg;
 
         [Option("abort")]
-        public bool abort { get; set; }
+        public readonly bool abort;
     }
 }

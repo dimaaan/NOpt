@@ -15,47 +15,47 @@ namespace NOpt.Test.Git.Options
     public class Add
     {
         [Option('n', "dry-run")]
-        public bool dryRun { get; set; }
+        public readonly bool dryRun;
 
         [Option('v', "verbose")]
-        public bool verbose { get; set; }
+        public readonly bool verbose;
 
         [Option('f', "force")]
-        public bool force { get; set; }
+        public readonly bool force;
 
         [Option('i', "interactive")]
-        public bool interactive { get; set; }
+        public readonly bool interactive;
 
         [Option('p', "patch")]
-        public bool patch { get; set; }
+        public readonly bool patch;
 
         [Option('e', "edit")]
-        public bool edit { get; set; }
+        public readonly bool edit;
 
         [Option('u', "update")]
-        public bool update { get; set; }
+        public readonly bool update;
 
         [Option('A', "all")]
         [Option("no-ignore-removal")]
-        public bool updateAll { get; set; }
+        public readonly bool updateAll;
 
         [Option("no-all")]
         [Option("ignore-removal")]
-        public bool updateNoAll { get; set; }
+        public readonly bool updateNoAll;
 
         [Option('N', "intent-to-add")]
-        public bool intentToAdd { get; set; }
+        public readonly bool intentToAdd;
 
         [Option("refresh")]
-        public bool refresh { get; set; }
+        public readonly bool refresh;
 
         [Option("ignore-errors")]
-        public bool ignoreErrors { get; set; }
+        public readonly bool ignoreErrors;
 
         [Option("ignore-missing")]
-        public bool ignoreMissing { get; set; }
+        public readonly bool ignoreMissing;
 
         [Value(0)]
-        public bool pathspec { get; set; }
+        public readonly bool pathspec;
     }
 }
