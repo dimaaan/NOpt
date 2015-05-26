@@ -10,8 +10,6 @@ namespace NOpt
 
     // TODO document enums. See Enum.Parse help
 
-    // TODO mutual exclusive
-
     public static class NOpt
     {
         // TODO document exceptions list
