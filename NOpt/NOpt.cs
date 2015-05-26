@@ -35,7 +35,7 @@ namespace NOpt
             options = new T();
             errorMessage = Parse(args, options);
 
-            return errorMessage != null;
+            return errorMessage == null;
         }
 
 

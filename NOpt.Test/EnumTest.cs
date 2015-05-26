@@ -23,16 +23,10 @@ namespace NOpt.Test
                 public readonly Actions actions;
             }
 
-            Options opt;
-
-            public ValueEnumTest()
-            {
-                opt = NOpt.Parse<Options>(new string[] { "WRITE" });
-            }
-
             [Fact]
             public void check()
             {
+                Options opt = NOpt.Parse<Options>(new string[] { "WRITE" });
                 Assert.Equal(Options.Actions.WRITE, opt.actions);
             }
         }

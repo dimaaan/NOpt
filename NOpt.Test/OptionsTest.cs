@@ -45,14 +45,11 @@ namespace NOpt.Test
                 opt = parse(new string[] { null, null });
                 Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
 
-                opt = parse("");
-                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+                Assert.Throws<FormatException>(() => parse(""));
 
-                opt = parse("--");
-                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+                Assert.Throws<FormatException>(() => parse("--"));
 
-                opt = parse("-");
-                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+                Assert.Throws<FormatException>(() => opt = parse("-"));
 
                 opt = parse("-a");
                 Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
@@ -151,8 +148,7 @@ namespace NOpt.Test
                 opt = NOpt.Parse<Options>(new string[] { "--file==file.txt" });
                 Assert.Equal("=file.txt", opt.file);
 
-                opt = NOpt.Parse<Options>(new string[] { "--file=" });
-                Assert.Null(opt.file);
+                Assert.Throws<FormatException>(() => NOpt.Parse<Options>(new string[] { "--file=" }));
             }
         }
     }
