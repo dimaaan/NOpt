@@ -28,6 +28,8 @@ namespace NOpt.Test
             {
                 Options opt = NOpt.Parse<Options>(new string[] { "WRITE" });
                 Assert.Equal(Options.Actions.WRITE, opt.actions);
+
+                Assert.Throws<FormatException>(() => NOpt.Parse<Options>(new string[] { "QQQ" }));
             }
         }
     }
