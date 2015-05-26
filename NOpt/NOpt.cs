@@ -28,6 +28,7 @@ namespace NOpt
             return opt;
         }
 
+
         private static string Parse(IEnumerable<string> args, object opt)
         {
             string errorMessage;
@@ -54,7 +55,6 @@ namespace NOpt
             return errorMessage;
         }
 
-        
 
         /// <returns>null if success, otherwise error message</returns>
         private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes)
@@ -79,27 +79,26 @@ namespace NOpt
                     }
 
                     string name = e.Current.Substring(2);
-                    string val = e.MoveNext() ? e.Current : null;
 
-                    setOption(opt, attributes, name, val);
+                    errorMessage = setOption(opt, attributes, name, e);
+                    if (errorMessage != null)
+                        break;
                 }
                 else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
                 {
                     if (e.Current.Length == 2) // in case "program -f"
                     {
                         char name = e.Current[1];
-                        string val = e.MoveNext() ? e.Current : null;
 
-                        errorMessage = setOption(opt, attributes, name, val);
+                        errorMessage = setOption(opt, attributes, name, e);
                         if (errorMessage != null)
                             break;
                     }
                     else if (e.Current.Length > 2) // in case "program -abc"
                     {
-                        char name;
                         for (int i = 1; i < e.Current.Length; i++)
                         {
-                            name = e.Current[i];
+                            char name = e.Current[i];
                             errorMessage = setOption(opt, attributes, name, null);
                             if (errorMessage != null)
                                 break;
@@ -123,51 +122,43 @@ namespace NOpt
             return errorMessage;
         }
 
-        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string longName, string value)
+
+        /// <param name="e">Enumerator to get value. Null if argument do not have a value (ex. -abc)</param>
+        /// <returns></returns>
+        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, object name, IEnumerator<string> e)
         {
+            string errorMessage;
             FieldInfo fieldInfo;
 
-            if (!attributes.TryGetValue(longName, out fieldInfo))
-                return $"Invalid option: --{value}";
-
-            if(value == null)
+            if (!attributes.TryGetValue(name, out fieldInfo))
             {
-                if (fieldInfo.FieldType != typeof(bool))
-                    return $"Option --{longName} should have a value";
-
-                return AssignToField(opt, fieldInfo, true);
+                errorMessage = $"Invalid option: {name}";
             }
             else
             {
-                if (String.IsNullOrEmpty(value))
-                    return $"Value for {fieldInfo.Name} is empty string";
-
-                return AssignToField(opt, fieldInfo, value);
+                if (fieldInfo.FieldType == typeof(bool))
+                {
+                    errorMessage = AssignToField(opt, fieldInfo, true);
+                }
+                else
+                {
+                    if (e != null && e.MoveNext())
+                    {
+                        if (String.IsNullOrEmpty(e.Current))
+                            errorMessage = $"Value of {name} is empty string";
+                        else
+                            errorMessage = AssignToField(opt, fieldInfo, e.Current);
+                    }
+                    else
+                    {
+                        errorMessage = $"Option {name} should have a value";
+                    }
+                }
             }
+
+            return errorMessage;
         }
 
-        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, char shortName, string value)
-        {
-            FieldInfo fieldInfo;
-
-            if (!attributes.TryGetValue(shortName, out fieldInfo))
-                return $"Invalid option: -{value}";
-
-            if(value == null)
-            {
-                if (fieldInfo.FieldType != typeof(bool))
-                    return $"Option -{shortName} should have a value";
-
-                return AssignToField(opt, fieldInfo, true);
-            }
-            else
-            {
-                if (String.IsNullOrEmpty(value))
-                    return $"Value for {fieldInfo.Name} is empty string";
-
-                return AssignToField(opt, fieldInfo, value);
-            }
-        }
 
         private static string setValue(object opt, Dictionary<object, FieldInfo> attributes, int index, string value)
         {
@@ -181,6 +172,7 @@ namespace NOpt
 
             return AssignToField(opt, fieldInfo, value);
         }
+
 
         private static string AssignToField(object opt, FieldInfo f, object value)
         {
