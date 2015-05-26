@@ -151,5 +151,46 @@ namespace NOpt.Test
                 Assert.Throws<FormatException>(() => NOpt.Parse<Options>(new string[] { "--file=" }));
             }
         }
+
+        public class MutuallyExclusive
+        {
+            public class Options
+            {
+                [Option('a', MutuallyExclusive = "mut")]
+                public readonly bool a;
+
+                [Option('b', "bb", MutuallyExclusive = "mut")]
+                public readonly bool b;
+
+                [Option('c', MutuallyExclusive = "mut2")]
+                public readonly bool c;
+
+                [Option('d')]
+                public readonly bool d;
+            }
+
+            private Options parse(params string[] args)
+            {
+                return NOpt.Parse<Options>(args);
+            }
+
+            [Fact]
+            public void check()
+            {
+                Options opt;
+
+                Assert.Throws<FormatException>(() => parse("-abcd"));
+                Assert.Throws<FormatException>(() => parse("-a", "--bb"));
+                Assert.Throws<FormatException>(() => parse("-a", "-b"));
+                Assert.Throws<FormatException>(() => parse("-bb"));
+                Assert.Throws<FormatException>(() => parse("--b", "--bb"));
+
+                opt = parse("-a", "-c", "-d");
+                Assert.True(opt.a && !opt.b && opt.c && opt.d);
+
+                opt = parse("-c");
+                Assert.True(!opt.a && !opt.b && opt.c && !opt.d);
+            }
+        }
     }
 }

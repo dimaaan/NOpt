@@ -50,6 +50,10 @@ namespace NOpt
                     }
                 }
 
+                if(optionsAttributes.Where(a => a.MutuallyExclusive != null).Count() > 1)
+                    throw new ArgumentException(
+                                $"Field {field.Name} marked with {nameof(OptionAttribute.MutuallyExclusive)} attribute more than one time");
+
                 if (optionsAttributes.Any())
                 {
                     foreach(var attr in optionsAttributes)

@@ -69,11 +69,10 @@ namespace NOpt
         /// <returns>null if success, otherwise error message</returns>
         private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes)
         {
-            // TODO --a=b syntax
-
             string errorMessage = null;
             var e = args.GetEnumerator();
             int valuesCount = 0;
+            var mutuallyExclusiveGroups = new List<string>();
 
             while (e.MoveNext())
             {
@@ -104,7 +103,7 @@ namespace NOpt
                         name = name.Substring(0, equalPos);
                     }
 
-                    errorMessage = setOption(opt, attributes, name, attachedValue, e);
+                    errorMessage = setOption(opt, attributes, name, attachedValue, e, mutuallyExclusiveGroups);
                     if (errorMessage != null)
                         break;
                 }
@@ -114,7 +113,7 @@ namespace NOpt
                     {
                         char name = e.Current[1];
 
-                        errorMessage = setOption(opt, attributes, name.ToString(), null, e);
+                        errorMessage = setOption(opt, attributes, name.ToString(), null, e, mutuallyExclusiveGroups);
                         if (errorMessage != null)
                             break;
                     }
@@ -123,7 +122,7 @@ namespace NOpt
                         for (int i = 1; i < e.Current.Length; i++)
                         {
                             char name = e.Current[i];
-                            errorMessage = setOption(opt, attributes, name.ToString(), null, null);
+                            errorMessage = setOption(opt, attributes, name.ToString(), null, null, mutuallyExclusiveGroups);
                             if (errorMessage != null)
                                 break;
                         }
@@ -150,7 +149,8 @@ namespace NOpt
         /// <param name="attachedValue">In case of --file=r.txt 'r.txt' is attached value</param>
         /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
-        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, IEnumerator<string> e)
+        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
+            IEnumerator<string> e, List<string> mutuallyExclusiveGroups)
         {
             string errorMessage;
             FieldInfo fieldInfo;
@@ -186,6 +186,26 @@ namespace NOpt
                     else
                     {
                         errorMessage = $"Option {name} should have a value";
+                    }
+                }
+
+                // check that no mutually exclusive options are used
+                var optionAttr = fieldInfo.GetCustomAttributes<OptionAttribute>().Where(a => a.MutuallyExclusive != null).FirstOrDefault();
+                if(optionAttr != null)
+                {
+                    if(mutuallyExclusiveGroups.Contains(optionAttr.MutuallyExclusive))
+                    {
+                        var mutNames = attributes.Values
+                            .SelectMany(a => a.GetCustomAttributes<OptionAttribute>())
+                            .Where(o => o.MutuallyExclusive == optionAttr.MutuallyExclusive)
+                            .SelectMany(a => new object[] { a.ShortName, a.LongName })
+                            .Where(a => a != null)
+                            .Distinct();
+                        errorMessage = $"Options {string.Join(", ", mutNames)} are mutually exclusive";
+                    }
+                    else
+                    {
+                        mutuallyExclusiveGroups.Add(optionAttr.MutuallyExclusive);
                     }
                 }
             }
