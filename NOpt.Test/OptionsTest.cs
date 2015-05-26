@@ -30,29 +30,55 @@ namespace NOpt.Test
             }
 
             [Fact]
-            public void checkNull()
+            public void check()
             {
+                Assert.Throws<ArgumentNullException>(() => parse(null));
 
-            }
+                Options opt;
 
-            [Fact]
-            public void checkabc()
-            {
-                Options opt = parse("-abc");
-                Assert.True(opt.opt1 && opt.opt2 && opt.opt3);
-            }
+                opt = parse(new string[] { });
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
 
-            [Fact]
-            public void checkDublicate()
-            {
-                Options opt = parse("-aa");
+                opt = parse(new string[] { null });
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse(new string[] { null, null });
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("");
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("--");
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-");
+                Assert.False(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-a");
                 Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
-            }
 
-            [Fact]
-            public void checkDublicateShortSyntax()
-            {
-                Options opt = parse(new string[] { "-a", "-a" });
+                opt = parse("-b");
+                Assert.True(!opt.opt1 && opt.opt2 && !opt.opt3);
+
+                opt = parse("-c");
+                Assert.True(!opt.opt1 && !opt.opt2 && opt.opt3);
+
+                opt = parse("-abc");
+                Assert.True(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-bc");
+                Assert.True(!opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-aa");
+                Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
+
+                opt = parse("-a", "-b", "-c");
+                Assert.True(opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-b", "-c");
+                Assert.True(!opt.opt1 && opt.opt2 && opt.opt3);
+
+                opt = parse("-a", "-a" );
                 Assert.True(opt.opt1 && !opt.opt2 && !opt.opt3);
             }
         }
