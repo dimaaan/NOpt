@@ -70,7 +70,7 @@ namespace NOpt
                 if (e.Current == null)
                     continue;
 
-                if (e.Current.StartsWith("--")) // in case "program --file file.txt"
+                if (e.Current.StartsWith("--")) // in case "program --file file.txt" or "program --file=file.txt"
                 {
                     if (e.Current.Length < 3)
                     {
@@ -79,8 +79,22 @@ namespace NOpt
                     }
 
                     string name = e.Current.Substring(2);
+                    string attachedValue = null;
+                    int equalPos = name.IndexOf('=');
 
-                    errorMessage = setOption(opt, attributes, name, e);
+                    if(equalPos == name.Length - 1)
+                    {
+                        errorMessage = $"Error: invalid syntax {e.Current}";
+                        break;
+                    }
+
+                    if(equalPos != -1)
+                    {
+                        attachedValue = equalPos != -1 ? name.Substring(equalPos + 1) : null;
+                        name = name.Substring(0, equalPos);
+                    }
+
+                    errorMessage = setOption(opt, attributes, name, attachedValue, e);
                     if (errorMessage != null)
                         break;
                 }
@@ -90,7 +104,7 @@ namespace NOpt
                     {
                         char name = e.Current[1];
 
-                        errorMessage = setOption(opt, attributes, name, e);
+                        errorMessage = setOption(opt, attributes, name.ToString(), null, e);
                         if (errorMessage != null)
                             break;
                     }
@@ -99,7 +113,7 @@ namespace NOpt
                         for (int i = 1; i < e.Current.Length; i++)
                         {
                             char name = e.Current[i];
-                            errorMessage = setOption(opt, attributes, name, null);
+                            errorMessage = setOption(opt, attributes, name.ToString(), null, null);
                             if (errorMessage != null)
                                 break;
                         }
@@ -123,9 +137,10 @@ namespace NOpt
         }
 
 
-        /// <param name="e">Enumerator to get value. Null if argument do not have a value (ex. -abc)</param>
+        /// <param name="attachedValue">In case of --file=r.txt 'r.txt' is attached value</param>
+        /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
-        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, object name, IEnumerator<string> e)
+        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, IEnumerator<string> e)
         {
             string errorMessage;
             FieldInfo fieldInfo;
@@ -138,16 +153,25 @@ namespace NOpt
             {
                 if (fieldInfo.FieldType == typeof(bool))
                 {
-                    errorMessage = AssignToField(opt, fieldInfo, true);
+                    if(attachedValue != null)
+                    {
+                        errorMessage = $"Option {name} should not have a value. Passed value: {attachedValue}";
+                    }
+                    else
+                    {
+                        errorMessage = AssignToField(opt, fieldInfo, true);
+                    }
                 }
                 else
                 {
-                    if (e != null && e.MoveNext())
+                    if (attachedValue != null || e != null && e.MoveNext())
                     {
-                        if (String.IsNullOrEmpty(e.Current))
+                        string value = attachedValue != null ? attachedValue : e.Current;
+
+                        if (String.IsNullOrEmpty(value))
                             errorMessage = $"Value of {name} is empty string";
                         else
-                            errorMessage = AssignToField(opt, fieldInfo, e.Current);
+                            errorMessage = AssignToField(opt, fieldInfo, value);
                     }
                     else
                     {

@@ -131,5 +131,29 @@ namespace NOpt.Test
                 Assert.Throws<ArgumentException>(() => NOpt.Parse<Options>(new string[] { "--file", "--file" }));
             }
         }
+
+        public class AttachedValue
+        {
+            public class Options
+            {
+                [Option("file")]
+                public readonly string file;
+            }
+
+            [Fact]
+            public void check()
+            {
+                Options opt;
+
+                opt = NOpt.Parse<Options>(new string[] { "--file=file.txt" });
+                Assert.Equal("file.txt", opt.file);
+
+                opt = NOpt.Parse<Options>(new string[] { "--file==file.txt" });
+                Assert.Equal("=file.txt", opt.file);
+
+                opt = NOpt.Parse<Options>(new string[] { "--file=" });
+                Assert.Null(opt.file);
+            }
+        }
     }
 }
