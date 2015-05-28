@@ -15,12 +15,9 @@ namespace NOpt
         // TODO document exceptions list
         public static T Parse<T>(string[] args) where T : new()
         {
-            T options;
-            string errorMessage;
-            bool res = TryParse<T>(args, out options, out errorMessage);
+            T options = new T();
 
-            if(!res)
-                throw new FormatException(errorMessage);
+            Parse(args, options);
 
             return options;
         }
@@ -31,15 +28,22 @@ namespace NOpt
                 throw new ArgumentNullException(nameof(args));
 
             options = new T();
-            errorMessage = Parse(args, options);
+            try
+            {
+                Parse(args, options);
+                errorMessage = null;
+            }
+            catch(FormatException e)
+            {
+                errorMessage = e.Message;
+            }
 
             return errorMessage == null;
         }
 
 
-        private static string Parse(string[] args, object opt)
+        private static void Parse(string[] args, object opt)
         {
-            string errorMessage;
             bool hasVerb;
             Dictionary<object, FieldInfo> attributes = AttributeDiscover.Discover(opt.GetType(), out hasVerb);
             string firstArg = args.FirstOrDefault();
@@ -50,24 +54,19 @@ namespace NOpt
                 FieldInfo field = attributes[firstArg];
                 object verbInstance = Activator.CreateInstance(field.FieldType); // TODO handle errors
 
-                errorMessage = Parse(args.Skip(1).ToArray(), verbInstance);
-
-                if (errorMessage == null)
-                    field.SetValue(opt, verbInstance);
+                Parse(args.Skip(1).ToArray(), verbInstance);
+                field.SetValue(opt, verbInstance);
             }
             else
             {
-                errorMessage = TokenizeUnixStyle(args, opt, attributes);
+                TokenizeUnixStyle(args, opt, attributes);
             }
-
-            return errorMessage;
         }
 
 
         /// <returns>null if success, otherwise error message</returns>
-        private static string TokenizeUnixStyle<T>(string[] args, T opt, Dictionary<object, FieldInfo> attributes)
+        private static void TokenizeUnixStyle<T>(string[] args, T opt, Dictionary<object, FieldInfo> attributes)
         {
-            string errorMessage = null;
             int valuesCount = 0;
             var mutuallyExclusiveGroups = new List<string>();
 
@@ -81,20 +80,14 @@ namespace NOpt
                 if (currArg.StartsWith("--")) // in case "program --file file.txt" or "program --file=file.txt"
                 {
                     if (currArg.Length < 3)
-                    {
-                        errorMessage = "Error: dash without name. Use '--long-name'";
-                        break;
-                    }
+                        throw new FormatException("Error: dash without name. Use '--long-name'");
 
                     string name = currArg.Substring(2);
                     string attachedValue = null;
                     int equalPos = name.IndexOf('=');
 
                     if(equalPos == name.Length - 1)
-                    {
-                        errorMessage = $"Error: invalid syntax {currArg}";
-                        break;
-                    }
+                        throw new FormatException($"Error: invalid syntax {currArg}");
 
                     if(equalPos != -1)
                     {
@@ -102,132 +95,104 @@ namespace NOpt
                         name = name.Substring(0, equalPos);
                     }
 
-                    errorMessage = setOption(opt, attributes, name, attachedValue, args, ref i, mutuallyExclusiveGroups);
-                    if (errorMessage != null)
-                        break;
+                    setOption(opt, attributes, name, attachedValue, args, ref i, mutuallyExclusiveGroups);
                 }
                 else if (currArg.StartsWith("-")) // in case "program -f file.txt"
                 {
                     if (currArg.Length == 2) // in case "program -f"
                     {
                         char name = currArg[1];
-
-                        errorMessage = setOption(opt, attributes, name.ToString(), null, args, ref i, mutuallyExclusiveGroups);
-                        if (errorMessage != null)
-                            break;
+                        setOption(opt, attributes, name.ToString(), null, args, ref i, mutuallyExclusiveGroups);
                     }
                     else if (currArg.Length > 2) // in case "program -abc"
                     {
                         for (int j = 1; j < currArg.Length; j++)
                         {
                             char name = currArg[j];
-                            errorMessage = setOption(opt, attributes, name.ToString(), null, null, ref i, mutuallyExclusiveGroups);
-                            if (errorMessage != null)
-                                break;
+                            setOption(opt, attributes, name.ToString(), null, null, ref i, mutuallyExclusiveGroups);
                         }
                     }
                     else // in case "program -"
                     {
-                        errorMessage = "Error: dash without name. Use '-s'";
-                        break;
+                        throw new FormatException("Error: dash without name. Use '-s'");
                     }
                 }
                 else // in case "program file.txt"
                 {
-                    errorMessage = setValue(opt, attributes, valuesCount++, currArg);
-
-                    if (errorMessage != null)
-                        break;
+                    setValue(opt, attributes, valuesCount++, currArg);
                 }
             }
-
-            return errorMessage;
         }
 
 
         /// <param name="attachedValue">In case of --file=r.txt 'r.txt' is attached value</param>
         /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
-        private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
+        private static void setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
             string[] args, ref int i, List<string> mutuallyExclusiveGroups)
         {
-            string errorMessage;
             FieldInfo fieldInfo;
 
             if (!attributes.TryGetValue(name, out fieldInfo))
+                throw new FormatException($"Invalid option: {name}");
+
+            if (fieldInfo.FieldType == typeof(bool))
             {
-                errorMessage = $"Invalid option: {name}";
+                if(attachedValue != null)
+                    throw new FormatException($"Option {name} should not have a value. Passed value: {attachedValue}");
+
+                AssignToField(opt, fieldInfo, true);
             }
             else
             {
-                if (fieldInfo.FieldType == typeof(bool))
+                if(attachedValue == null && (args == null || args.Length < ++i))
+                    throw new FormatException($"Option {name} should have a value");
+
+                string value = attachedValue != null ? attachedValue : args[i];
+
+                if (String.IsNullOrEmpty(value))
+                    throw new FormatException($"Value of {name} is empty string");
+                    
+                AssignToField(opt, fieldInfo, value);
+            }
+
+            // check that no mutually exclusive options are used
+            var optionAttr = fieldInfo.GetCustomAttributes<OptionAttribute>().Where(a => a.MutuallyExclusive != null).FirstOrDefault();
+            if(optionAttr != null)
+            {
+                if(mutuallyExclusiveGroups.Contains(optionAttr.MutuallyExclusive))
                 {
-                    if(attachedValue != null)
-                    {
-                        errorMessage = $"Option {name} should not have a value. Passed value: {attachedValue}";
-                    }
-                    else
-                    {
-                        errorMessage = AssignToField(opt, fieldInfo, true);
-                    }
+                    var mutNames = attributes.Values
+                        .SelectMany(a => a.GetCustomAttributes<OptionAttribute>())
+                        .Where(o => o.MutuallyExclusive == optionAttr.MutuallyExclusive)
+                        .SelectMany(a => new object[] { a.ShortName, a.LongName })
+                        .Where(a => a != null)
+                        .Distinct();
+                    throw new FormatException($"Options {string.Join(", ", mutNames)} are mutually exclusive");
                 }
                 else
                 {
-                    if (attachedValue != null || args != null && ++i < args.Length)
-                    {
-                        string value = attachedValue != null ? attachedValue : args[i];
-
-                        if (String.IsNullOrEmpty(value))
-                            errorMessage = $"Value of {name} is empty string";
-                        else
-                            errorMessage = AssignToField(opt, fieldInfo, value);
-                    }
-                    else
-                    {
-                        errorMessage = $"Option {name} should have a value";
-                    }
-                }
-
-                // check that no mutually exclusive options are used
-                var optionAttr = fieldInfo.GetCustomAttributes<OptionAttribute>().Where(a => a.MutuallyExclusive != null).FirstOrDefault();
-                if(optionAttr != null)
-                {
-                    if(mutuallyExclusiveGroups.Contains(optionAttr.MutuallyExclusive))
-                    {
-                        var mutNames = attributes.Values
-                            .SelectMany(a => a.GetCustomAttributes<OptionAttribute>())
-                            .Where(o => o.MutuallyExclusive == optionAttr.MutuallyExclusive)
-                            .SelectMany(a => new object[] { a.ShortName, a.LongName })
-                            .Where(a => a != null)
-                            .Distinct();
-                        errorMessage = $"Options {string.Join(", ", mutNames)} are mutually exclusive";
-                    }
-                    else
-                    {
-                        mutuallyExclusiveGroups.Add(optionAttr.MutuallyExclusive);
-                    }
+                    mutuallyExclusiveGroups.Add(optionAttr.MutuallyExclusive);
                 }
             }
-
-            return errorMessage;
         }
 
 
-        private static string setValue(object opt, Dictionary<object, FieldInfo> attributes, int index, string value)
+        private static void setValue(object opt, Dictionary<object, FieldInfo> attributes, int index, string value)
         {
             FieldInfo fieldInfo;
 
             if (!attributes.TryGetValue(index, out fieldInfo))
-                return $"Invalid argument: {value}";
+                throw new FormatException($"Invalid argument: {value}");
 
             if (String.IsNullOrEmpty(value))
-                return $"Value for {fieldInfo.Name} is null or empty string";
+                throw new FormatException($"Value for {fieldInfo.Name} is null or empty string");
 
-            return AssignToField(opt, fieldInfo, value);
+            AssignToField(opt, fieldInfo, value);
         }
 
 
-        private static string AssignToField(object opt, FieldInfo f, object value)
+        private static void AssignToField(object opt, FieldInfo f, object value)
         {
             if(f.FieldType.IsEnum)
             {
@@ -237,8 +202,9 @@ namespace NOpt
                 {
                     enumValue = Enum.Parse(f.FieldType, (string) value, true);
                 }
-                catch(Exception)  {
-                    return $"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}";
+                catch(Exception)
+                {
+                    throw new FormatException($"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}");
                 }
 
                 f.SetValue(opt, enumValue);
@@ -247,8 +213,6 @@ namespace NOpt
             {
                 f.SetValue(opt, value);
             }
-
-            return null;
         }
     }
 }
