@@ -37,7 +37,7 @@ namespace NOpt
         }
 
 
-        private static string Parse(IEnumerable<string> args, object opt)
+        private static string Parse(string[] args, object opt)
         {
             string errorMessage;
             bool hasVerb;
@@ -50,7 +50,7 @@ namespace NOpt
                 FieldInfo field = attributes[firstArg];
                 object verbInstance = Activator.CreateInstance(field.FieldType); // TODO handle errors
 
-                errorMessage = Parse(args.Skip(1), verbInstance);
+                errorMessage = Parse(args.Skip(1).ToArray(), verbInstance);
 
                 if (errorMessage == null)
                     field.SetValue(opt, verbInstance);
@@ -65,33 +65,34 @@ namespace NOpt
 
 
         /// <returns>null if success, otherwise error message</returns>
-        private static string TokenizeUnixStyle<T>(IEnumerable<string> args, T opt, Dictionary<object, FieldInfo> attributes)
+        private static string TokenizeUnixStyle<T>(string[] args, T opt, Dictionary<object, FieldInfo> attributes)
         {
             string errorMessage = null;
-            var e = args.GetEnumerator();
             int valuesCount = 0;
             var mutuallyExclusiveGroups = new List<string>();
 
-            while (e.MoveNext())
+            for (int i = 0; i < args.Length; i++)
             {
-                if (e.Current == null)
+                string currArg = args[i];
+
+                if (currArg == null)
                     continue;
 
-                if (e.Current.StartsWith("--")) // in case "program --file file.txt" or "program --file=file.txt"
+                if (currArg.StartsWith("--")) // in case "program --file file.txt" or "program --file=file.txt"
                 {
-                    if (e.Current.Length < 3)
+                    if (currArg.Length < 3)
                     {
                         errorMessage = "Error: dash without name. Use '--long-name'";
                         break;
                     }
 
-                    string name = e.Current.Substring(2);
+                    string name = currArg.Substring(2);
                     string attachedValue = null;
                     int equalPos = name.IndexOf('=');
 
                     if(equalPos == name.Length - 1)
                     {
-                        errorMessage = $"Error: invalid syntax {e.Current}";
+                        errorMessage = $"Error: invalid syntax {currArg}";
                         break;
                     }
 
@@ -101,26 +102,26 @@ namespace NOpt
                         name = name.Substring(0, equalPos);
                     }
 
-                    errorMessage = setOption(opt, attributes, name, attachedValue, e, mutuallyExclusiveGroups);
+                    errorMessage = setOption(opt, attributes, name, attachedValue, args, ref i, mutuallyExclusiveGroups);
                     if (errorMessage != null)
                         break;
                 }
-                else if (e.Current.StartsWith("-")) // in case "program -f file.txt"
+                else if (currArg.StartsWith("-")) // in case "program -f file.txt"
                 {
-                    if (e.Current.Length == 2) // in case "program -f"
+                    if (currArg.Length == 2) // in case "program -f"
                     {
-                        char name = e.Current[1];
+                        char name = currArg[1];
 
-                        errorMessage = setOption(opt, attributes, name.ToString(), null, e, mutuallyExclusiveGroups);
+                        errorMessage = setOption(opt, attributes, name.ToString(), null, args, ref i, mutuallyExclusiveGroups);
                         if (errorMessage != null)
                             break;
                     }
-                    else if (e.Current.Length > 2) // in case "program -abc"
+                    else if (currArg.Length > 2) // in case "program -abc"
                     {
-                        for (int i = 1; i < e.Current.Length; i++)
+                        for (int j = 1; j < currArg.Length; j++)
                         {
-                            char name = e.Current[i];
-                            errorMessage = setOption(opt, attributes, name.ToString(), null, null, mutuallyExclusiveGroups);
+                            char name = currArg[j];
+                            errorMessage = setOption(opt, attributes, name.ToString(), null, null, ref i, mutuallyExclusiveGroups);
                             if (errorMessage != null)
                                 break;
                         }
@@ -133,7 +134,7 @@ namespace NOpt
                 }
                 else // in case "program file.txt"
                 {
-                    errorMessage = setValue(opt, attributes, valuesCount++, e.Current);
+                    errorMessage = setValue(opt, attributes, valuesCount++, currArg);
 
                     if (errorMessage != null)
                         break;
@@ -148,7 +149,7 @@ namespace NOpt
         /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
         private static string setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
-            IEnumerator<string> e, List<string> mutuallyExclusiveGroups)
+            string[] args, ref int i, List<string> mutuallyExclusiveGroups)
         {
             string errorMessage;
             FieldInfo fieldInfo;
@@ -172,9 +173,9 @@ namespace NOpt
                 }
                 else
                 {
-                    if (attachedValue != null || e != null && e.MoveNext())
+                    if (attachedValue != null || args != null && ++i < args.Length)
                     {
-                        string value = attachedValue != null ? attachedValue : e.Current;
+                        string value = attachedValue != null ? attachedValue : args[i];
 
                         if (String.IsNullOrEmpty(value))
                             errorMessage = $"Value of {name} is empty string";
