@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -95,21 +96,21 @@ namespace NOpt
                         name = name.Substring(0, equalPos);
                     }
 
-                    setOption(opt, attributes, name, attachedValue, args, ref i, mutuallyExclusiveGroups);
+                    setOption(opt, attributes, name, attachedValue, args, ref i, mutuallyExclusiveGroups, '-');
                 }
                 else if (currArg.StartsWith("-")) // in case "program -f file.txt"
                 {
                     if (currArg.Length == 2) // in case "program -f"
                     {
                         char name = currArg[1];
-                        setOption(opt, attributes, name.ToString(), null, args, ref i, mutuallyExclusiveGroups);
+                        setOption(opt, attributes, name.ToString(), null, args, ref i, mutuallyExclusiveGroups, '-');
                     }
                     else if (currArg.Length > 2) // in case "program -abc"
                     {
                         for (int j = 1; j < currArg.Length; j++)
                         {
                             char name = currArg[j];
-                            setOption(opt, attributes, name.ToString(), null, null, ref i, mutuallyExclusiveGroups);
+                            setOption(opt, attributes, name.ToString(), null, null, ref i, mutuallyExclusiveGroups, '-');
                         }
                     }
                     else // in case "program -"
@@ -129,7 +130,7 @@ namespace NOpt
         /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
         private static void setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
-            string[] args, ref int i, List<string> mutuallyExclusiveGroups)
+            string[] args, ref int i, List<string> mutuallyExclusiveGroups, char optionStartSymbol)
         {
             FieldInfo fieldInfo;
 
@@ -142,6 +143,29 @@ namespace NOpt
                     throw new FormatException($"Option {name} should not have a value. Passed value: {attachedValue}");
 
                 AssignToField(opt, fieldInfo, true);
+            }
+            else if(fieldInfo.FieldType == typeof(string[]))
+            {
+                if (attachedValue != null)
+                    throw new FormatException($"Bad syntax near option {name}");
+
+                var values = new List<string>();
+
+                for(int j = i + 1; j < args.Length; j++)
+                {
+                    if(args[j][0] != optionStartSymbol)
+                    {
+                        values.Add(args[j]);
+                        i++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if(values.Count != 0)
+                    AssignToField(opt, fieldInfo, values.ToArray());
             }
             else
             {

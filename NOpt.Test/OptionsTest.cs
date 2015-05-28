@@ -192,5 +192,44 @@ namespace NOpt.Test
                 Assert.True(!opt.a && !opt.b && opt.c && !opt.d);
             }
         }
+
+        public class Arrays
+        {
+            public class Options
+            {
+                [Option('s', "str")]
+                public string[] strings;
+
+                [Option('b')]
+                public bool b;
+            }
+
+            [Fact]
+            public void check()
+            {
+                Options opt;
+
+                opt = NOpt.Parse<Options>(new string[] { "-s"});
+                Assert.True(opt.strings == null && !opt.b);
+
+                opt = NOpt.Parse<Options>(new string[] { "-s", "a", "b", "a" });
+                Assert.True(opt.strings[0] == "a");
+                Assert.True(opt.strings[1] == "b");
+                Assert.True(opt.strings[2] == "a");
+                Assert.False(opt.b);
+
+                opt = NOpt.Parse<Options>(new string[] { "-s", "a", "b", "-b" });
+                Assert.True(opt.strings[0] == "a");
+                Assert.True(opt.strings[1] == "b");
+                Assert.True(opt.b);
+
+                opt = NOpt.Parse<Options>(new string[] { "--str", "a" });
+                Assert.True(opt.strings[0] == "a");
+
+                Assert.Throws<FormatException>(() => NOpt.Parse<Options>(new string[] { "--str", "a", "-err" }));
+
+                Assert.Throws<FormatException>(() => NOpt.Parse<Options>(new string[] { "--str=a", "a", "-err" }));
+            }
+        }
     }
 }
