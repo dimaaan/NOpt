@@ -22,6 +22,53 @@ namespace NOpt.Test.Git.Options
     */
     public class Notes
     {
-        // TODO implement
+        public enum Command { LIST, ADD, COPY, APPEND, EDIT, SHOW, MERGE, REMOVE, PRUNE, GET_REF };
+
+        public enum Strategy { MANUAL, OURS, THEIRS, UNION, CAT_SORT_UNIQ };
+
+        [Value(0)]
+        public readonly Command command = Command.LIST;
+
+        [Option('f', "force")]
+        public readonly bool force;
+
+        [Option('m', "message")]
+        public readonly string message;
+
+        [Option('F', "file")]
+        public readonly string file;
+
+        [Option('C', "reuse-message")]
+        public readonly string reuseMessage;
+
+        [Option('c', "reedit-message")]
+        public readonly string reeditMessage;
+
+        [Option("ref")]
+        public readonly string @ref;
+
+        [Option("ignore-missing")]
+        public readonly bool ignoreMissing;
+
+        [Option("stdin")]
+        public readonly bool stdin;
+
+        [Option('n', "dry-run")]
+        public readonly bool dryRun;
+
+        [Option('s', "strategy")]
+        public readonly Strategy strategy = Strategy.MANUAL;
+
+        [Option("commit")]
+        public readonly bool commit;
+
+        [Option("abort")]
+        public readonly bool abort;
+
+        [Option('q', "quiet")]
+        public readonly bool quiet;
+
+        [Option('v', "verbose")]
+        public readonly bool verbose;
     }
 }
