@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NOpt.Test.Git.Options
 {
@@ -13,6 +9,31 @@ namespace NOpt.Test.Git.Options
     */
     public class Rebase
     {
-        // TODO implement
+        [Option('i', "interactive")]
+        public readonly bool interactive;
+
+        [Option("exec")]
+        public readonly string exec;
+
+        [Option("onto")]
+        public readonly string onto;
+
+        [Option("root")]
+        public readonly bool root;
+
+        [Option("continue", MutuallyExclusive = "c")]
+        public readonly bool @continue;
+
+        [Option("skip", MutuallyExclusive = "c")]
+        public readonly bool skip;
+
+        [Option("abort", MutuallyExclusive = "c")]
+        public readonly bool abort;
+
+        [Option("edit-todo", MutuallyExclusive = "c")]
+        public readonly bool editTodo;
+
+        [Value(0)]
+        public readonly string[] extras;
     }
 }

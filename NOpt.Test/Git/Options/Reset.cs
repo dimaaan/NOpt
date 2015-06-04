@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NOpt.Test.Git.Options
 {
@@ -13,6 +9,31 @@ namespace NOpt.Test.Git.Options
     */
     public class Reset
     {
-        // TODO implement
+        [Option('q', "quiet")]
+        public readonly bool quiet;
+
+        [Option('p', "patch ")]
+        public readonly bool patch;
+
+        [Option("soft", MutuallyExclusive = "mode")]
+        public readonly bool soft;
+
+        [Option("mixed", MutuallyExclusive = "mode")]
+        public readonly bool mixed;
+
+        [Option('N', MutuallyExclusive = "mode")]
+        public readonly bool N;
+
+        [Option("hard", MutuallyExclusive = "mode")]
+        public readonly bool hard;
+
+        [Option("merge", MutuallyExclusive = "mode")]
+        public readonly bool merge;
+
+        [Option("keep", MutuallyExclusive = "mode")]
+        public readonly bool keep;
+
+        [Value(0)]
+        public readonly string[] extras;
     }
 }
