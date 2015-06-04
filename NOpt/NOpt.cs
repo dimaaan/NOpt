@@ -9,8 +9,6 @@ namespace NOpt
 {
     // TODO compare complexity of code with "commandline"
 
-    // TODO document enums. See Enum.Parse help
-
     public static class NOpt
     {
         // TODO document exceptions list
@@ -224,11 +222,13 @@ namespace NOpt
 
                 try
                 {
-                    enumValue = Enum.Parse(f.FieldType, (string) value, true);
+                    string strValue = (string)value;
+                    strValue = strValue.Replace('-', '_'); // so we could map "no-file" to enum { NO_FILE }
+                    enumValue = Enum.Parse(f.FieldType, strValue, true);
                 }
-                catch(Exception)
+                catch(Exception e)
                 {
-                    throw new FormatException($"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}");
+                    throw new FormatException($"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}", e);
                 }
 
                 f.SetValue(opt, enumValue);
