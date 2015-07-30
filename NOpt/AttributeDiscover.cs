@@ -11,12 +11,12 @@ namespace NOpt
         private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);
 
         /// <summary>
-        /// Extract option class memebers via reflaction into dictoinary
+        /// Extract option class members via reflection into dictionary
         /// </summary>
-        /// <param name="optionType">Option class or struct type</param>
+        /// <param name="optionType">Option class or structure type</param>
         /// <param name="hasVerb">return true, if verb is present</param>
         /// <returns>
-        /// Dictionary with keys: string for shortnames, longnames and verb, int for unbounded value index
+        /// Dictionary with keys: string for short names, long names and verb, int for unbounded value index
         /// </returns>
         public static Dictionary<object, FieldInfo> Discover(Type optionType, out bool hasVerb)
         {

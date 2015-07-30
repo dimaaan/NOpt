@@ -12,7 +12,7 @@ namespace NOpt
     /// class Options {
     /// 
     ///     [Option('a')]
-    ///     public string opt1; // will be null, because no value suppiled
+    ///     public string opt1; // will be null, because no value supplied
     /// 
     ///     [Option('b')]
     ///     public bool opt2; // will be true, because option exists in command line
