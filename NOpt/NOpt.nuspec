@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Dmitry Anshilevich</authors>
+    <owners>Dmitry Anshilevich</owners>
+    <licenseUrl>https://github.com/dimaaan/NOpt/blob/master/license.txt</licenseUrl>
+    <projectUrl>https://github.com/dimaaan/NOpt</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Initial release</releaseNotes>
+    <copyright>Copyright 2015</copyright>
+    <tags>command line argument option parser parsing shell</tags>
+  </metadata>
+</package>
