@@ -59,7 +59,7 @@ public readonly Color color = Color.RED;`
 
 * After option class is ready
 ``` cs
-class Progam
+class Program
 {
     static void Main(string[] args)
     {
