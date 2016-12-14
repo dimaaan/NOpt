@@ -6,24 +6,24 @@ namespace NOpt.Test.Git.Options
     public class Rm
     {
         [Option('f', "force")]
-        public readonly string force;
+        public string force { get; set; }
 
         [Option('n', "dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option('r')]
-        public readonly bool r;
+        public bool r { get; set; }
 
         [Option("cached")]
-        public readonly bool cached;
+        public bool cached { get; set; }
 
         [Option("ignore-unmatch")]
-        public readonly bool ignoreUnmatch;
+        public bool ignoreUnmatch { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Value(0)]
-        public readonly string[] files;
+        public string[] files { get; set; }
     }
 }

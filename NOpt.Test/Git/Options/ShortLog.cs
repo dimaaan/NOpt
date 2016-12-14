@@ -9,24 +9,24 @@ namespace NOpt.Test.Git.Options
     public class ShortLog
     {
         [Option('n', "numbered")]
-        public readonly bool numbered;
+        public bool numbered { get; set; }
 
         [Option('s', "summary")]
-        public readonly bool summary;
+        public bool summary { get; set; }
 
         [Option('e', "email")]
-        public readonly bool email;
+        public bool email { get; set; }
 
         [Option("format")]
-        public readonly string format;
+        public string format { get; set; }
 
         [Option('w')]
-        public readonly string w;
+        public string w { get; set; }
 
         [Value(0)]
-        public readonly string revisionRange;
+        public string revisionRange { get; set; }
 
         [Value(1)]
-        public readonly string[] path;
+        public string[] path { get; set; }
     }
 }

@@ -12,31 +12,31 @@ namespace NOpt.Test.Git.Options
         public enum Decoration { SHORT, FULL, NO };
 
         [Option("follow")]
-        public readonly bool follow;
+        public bool follow { get; set; }
 
         [Option("decorate", MutuallyExclusive = "decorate")]
-        public readonly Decoration decorate;
+        public Decoration decorate { get; set; }
 
         [Option("no-decorate", MutuallyExclusive = "decorate")]
-        public readonly bool noDecorate;
+        public bool noDecorate { get; set; }
 
         [Option("source")]
-        public readonly bool source;
+        public bool source { get; set; }
 
         [Option("use-mailmap")]
-        public readonly bool useMailmap;
+        public bool useMailmap { get; set; }
 
         [Option("full-diff")]
-        public readonly bool fullDiff;
+        public bool fullDiff { get; set; }
 
         [Option("log-size")]
-        public readonly int logSize;
+        public int logSize { get; set; }
 
         [Option('L')]
-        public readonly string L;
+        public string L { get; set; }
 
         [Value(0)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
 
     }
 }

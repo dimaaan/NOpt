@@ -14,21 +14,21 @@ namespace NOpt.Test.Git.Options
     public class Init
     {
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option("bare")]
-        public readonly bool bare;
+        public bool bare { get; set; }
 
         [Option("template")]
-        public readonly string template;
+        public string template { get; set; }
 
         [Option("separate-git-dir")]
-        public readonly string separateGitDir;
+        public string separateGitDir { get; set; }
 
         [Option("shared")]
-        public readonly string shared;
+        public string shared { get; set; }
 
         [Value(0)]
-        public readonly string dir;
+        public string dir { get; set; }
     }
 }

@@ -16,11 +16,11 @@ namespace NOpt.Test
                 public class PushOptions
                 {
                     [Option('r', "repo")]
-                    public string repo;
+                    public string repo { get; set; }
                 }
 
                 [Verb("push")]
-                public PushOptions push;
+                public PushOptions push { get; set; }
             }
 
             Options opt;

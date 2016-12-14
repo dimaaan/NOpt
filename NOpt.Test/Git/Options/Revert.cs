@@ -15,39 +15,39 @@ namespace NOpt.Test.Git.Options
     public class Revert
     {
         [Value(0)]
-        public readonly string commit;
+        public string commit { get; set; }
 
         [Option('e', "edit")]
-        public readonly bool edit;
+        public bool edit { get; set; }
 
         [Option('m', "mainline")]
-        public readonly int mainline;
+        public int mainline { get; set; }
 
         [Option("no-edit")]
-        public readonly bool noEdit;
+        public bool noEdit { get; set; }
 
         [Option('n', "no-commit")]
-        public readonly bool noCommit;
+        public bool noCommit { get; set; }
 
         [Option('S', "gpg-sign")]
-        public readonly bool gpgSign;
+        public bool gpgSign { get; set; }
 
         [Option('s', "signoff")]
-        public readonly bool signoff;
+        public bool signoff { get; set; }
 
         [Option("strategy")]
-        public readonly string strategy;
+        public string strategy { get; set; }
 
         [Option('X', "strategy-option")]
-        public readonly string strategyOption;
+        public string strategyOption { get; set; }
 
         [Option("continue")]
-        public readonly bool @continue;
+        public bool @continue { get; set; }
 
         [Option("quit")]
-        public readonly bool quit;
+        public bool quit { get; set; }
 
         [Option("abort")]
-        public readonly bool abort;
+        public bool abort { get; set; }
     }
 }

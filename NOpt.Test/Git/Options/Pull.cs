@@ -12,21 +12,21 @@ namespace NOpt.Test.Git.Options
         public enum Submodules { YES, ON_DEMAND, NO };
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option('v', "verbose")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
 
         [Option("recurse-submodules")]
-        public readonly Submodule recurseSubmodules;
+        public Submodule recurseSubmodules { get; set; }
 
         [Option("no-recurse-submodules")]
-        public readonly Submodule noRecurseSubmodules;
+        public Submodule noRecurseSubmodules { get; set; }
 
         [Value(0)]
-        public readonly string repository;
+        public string repository { get; set; }
 
         [Value(1)]
-        public readonly string[] refspec;
+        public string[] refspec { get; set; }
     }
 }

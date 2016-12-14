@@ -22,145 +22,145 @@ namespace NOpt.Test.Git.Options
         public class Add
         {
             [Option('b', "branch")]
-            public readonly string branch;
+            public string branch { get; set; }
 
             [Option('f', "force")]
-            public readonly bool force;
+            public bool force { get; set; }
 
             [Option("name")]
-            public readonly string name;
+            public string name { get; set; }
 
             [Option("reference")]
-            public readonly string reference;
+            public string reference { get; set; }
 
             [Option("depth")]
-            public readonly int depth;
+            public int depth { get; set; }
 
             [Value(0)]
-            public readonly string repository;
+            public string repository { get; set; }
 
             [Value(1)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Status
         {
             [Option("cached")]
-            public readonly bool cached;
+            public bool cached { get; set; }
 
             [Option("recursive")]
-            public readonly bool recursive;
+            public bool recursive { get; set; }
 
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Init
         {
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Deinit
         {
             [Option('f', "force")]
-            public readonly bool force;
+            public bool force { get; set; }
 
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Update
         {
             [Option("init")]
-            public readonly bool init;
+            public bool init { get; set; }
 
             [Option("remote")]
-            public readonly bool remote;
+            public bool remote { get; set; }
 
             [Option('N', "no-fetch")]
-            public readonly bool noFetch;
+            public bool noFetch { get; set; }
 
             [Option('f', "force")]
-            public readonly bool force;
+            public bool force { get; set; }
 
             [Option("rebase", MutuallyExclusive = "rebaseMerge")]
-            public readonly bool rebase;
+            public bool rebase { get; set; }
 
             [Option("merge", MutuallyExclusive = "rebaseMerge")]
-            public readonly bool merge;
+            public bool merge { get; set; }
 
             [Option("reference")]
-            public readonly string reference;
+            public string reference { get; set; }
 
             [Option("depth")]
-            public readonly int depth;
+            public int depth { get; set; }
 
             [Option("recursive")]
-            public readonly bool recursive;
+            public bool recursive { get; set; }
 
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Summary
         {
             [Option("cached", MutuallyExclusive = "cached")]
-            public readonly bool cached;
+            public bool cached { get; set; }
 
             [Option("files", MutuallyExclusive = "cached")]
-            public readonly bool files;
+            public bool files { get; set; }
 
             [Option('n', "summary-limit")]
-            public readonly int summaryLimit;
+            public int summaryLimit { get; set; }
 
             [Option("commit")]
-            public readonly bool commit;
+            public bool commit { get; set; }
 
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         public class Foreach
         {
             [Option("recursive")]
-            public readonly bool recursive;
+            public bool recursive { get; set; }
 
             [Verb("submodule")]
-            public readonly Submodule submodule;
+            public Submodule submodule { get; set; }
         }
 
         public class Sync
         {
             [Value(0)]
-            public readonly string path;
+            public string path { get; set; }
         }
 
         [Option("quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Verb("add")]
-        public readonly Add add;
+        public Add add { get; set; }
 
         [Verb("status")]
-        public readonly Status status;
+        public Status status { get; set; }
 
         [Verb("init")]
-        public readonly Init init;
+        public Init init { get; set; }
 
         [Verb("deinit")]
-        public readonly Deinit deinit;
+        public Deinit deinit { get; set; }
 
         [Verb("update")]
-        public readonly Update update;
+        public Update update { get; set; }
 
         [Verb("summary")]
-        public readonly Summary summary;
+        public Summary summary { get; set; }
 
         [Verb("foreach")]
-        public readonly Foreach @foreach;
+        public Foreach @foreach { get; set; }
 
         [Verb("sync")]
-        public readonly Sync sync;
+        public Sync sync { get; set; }
     }
 }

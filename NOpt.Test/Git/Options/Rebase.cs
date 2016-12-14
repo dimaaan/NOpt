@@ -10,30 +10,30 @@ namespace NOpt.Test.Git.Options
     public class Rebase
     {
         [Option('i', "interactive")]
-        public readonly bool interactive;
+        public bool interactive { get; set; }
 
         [Option("exec")]
-        public readonly string exec;
+        public string exec { get; set; }
 
         [Option("onto")]
-        public readonly string onto;
+        public string onto { get; set; }
 
         [Option("root")]
-        public readonly bool root;
+        public bool root { get; set; }
 
         [Option("continue", MutuallyExclusive = "c")]
-        public readonly bool @continue;
+        public bool @continue { get; set; }
 
         [Option("skip", MutuallyExclusive = "c")]
-        public readonly bool skip;
+        public bool skip { get; set; }
 
         [Option("abort", MutuallyExclusive = "c")]
-        public readonly bool abort;
+        public bool abort { get; set; }
 
         [Option("edit-todo", MutuallyExclusive = "c")]
-        public readonly bool editTodo;
+        public bool editTodo { get; set; }
 
         [Value(0)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
     }
 }

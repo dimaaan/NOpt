@@ -11,45 +11,45 @@ namespace NOpt.Test.Git.Options
     public class Push
     {
         [Option("all", MutuallyExclusive = "all")]
-        public readonly bool all;
+        public bool all { get; set; }
 
         [Option("mirror", MutuallyExclusive = "all")]
-        public readonly bool mirror;
+        public bool mirror { get; set; }
 
         [Option("tags", MutuallyExclusive = "all")]
-        public readonly bool tags;
+        public bool tags { get; set; }
 
         [Option("follow-tags")]
-        public readonly bool followTags;
+        public bool followTags { get; set; }
 
         [Option('n', "dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option("receive-pack")]
-        public readonly string receivePack;
+        public string receivePack { get; set; }
 
         [Option("repo")]
-        public readonly string repo;
+        public string repo { get; set; }
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option("prune")]
-        public readonly bool prune;
+        public bool prune { get; set; }
 
         [Option('v', "verbose")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
 
         [Option('u', "set-upstream")]
-        public readonly bool setUpstream;
+        public bool setUpstream { get; set; }
 
         [Option("no-verify")]
-        public readonly bool noVerify;
+        public bool noVerify { get; set; }
 
         [Value(0)]
-        public readonly string repository;
+        public string repository { get; set; }
 
         [Value(1)]
-        public readonly string refspec;
+        public string refspec { get; set; }
     }
 }

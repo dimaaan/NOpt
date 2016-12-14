@@ -27,48 +27,48 @@ namespace NOpt.Test.Git.Options
         public enum Strategy { MANUAL, OURS, THEIRS, UNION, CAT_SORT_UNIQ };
 
         [Value(0)]
-        public readonly Command command = Command.LIST;
+        public Command command { get; set; } = Command.LIST;
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('m', "message")]
-        public readonly string message;
+        public string message { get; set; }
 
         [Option('F', "file")]
-        public readonly string file;
+        public string file { get; set; }
 
         [Option('C', "reuse-message")]
-        public readonly string reuseMessage;
+        public string reuseMessage { get; set; }
 
         [Option('c', "reedit-message")]
-        public readonly string reeditMessage;
+        public string reeditMessage { get; set; }
 
         [Option("ref")]
-        public readonly string @ref;
+        public string @ref { get; set; }
 
         [Option("ignore-missing")]
-        public readonly bool ignoreMissing;
+        public bool ignoreMissing { get; set; }
 
         [Option("stdin")]
-        public readonly bool stdin;
+        public bool stdin { get; set; }
 
         [Option('n', "dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option('s', "strategy")]
-        public readonly Strategy strategy = Strategy.MANUAL;
+        public Strategy strategy { get; set; } = Strategy.MANUAL;
 
         [Option("commit")]
-        public readonly bool commit;
+        public bool commit { get; set; }
 
         [Option("abort")]
-        public readonly bool abort;
+        public bool abort { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option('v', "verbose")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
     }
 }

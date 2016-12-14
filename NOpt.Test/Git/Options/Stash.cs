@@ -19,61 +19,61 @@ namespace NOpt.Test.Git.Options
         public class Show
         {
             [Value(0)]
-            public readonly string stash;
+            public string stash { get; set; }
         }
 
         public class Drop
         {
             [Option('q', "quiet")]
-            public readonly bool quiet;
+            public bool quiet { get; set; }
 
             [Value(0)]
-            public readonly string stash;
+            public string stash { get; set; }
         }
 
         public class PopApply
         {
             [Option("index")]
-            public readonly bool index;
+            public bool index { get; set; }
 
             [Option('q', "quiet")]
-            public readonly bool quiet;
+            public bool quiet { get; set; }
 
             [Value(0)]
-            public readonly string stash;
+            public string stash { get; set; }
         }
 
         public class Branch
         {
             [Value(0)]
-            public readonly string branchname;
+            public string branchname { get; set; }
 
             [Value(1)]
-            public readonly string stash;
+            public string stash { get; set; }
         }
 
         public class Save
         {
             [Option('p', "patch")]
-            public readonly bool patch;
+            public bool patch { get; set; }
 
             [Option('k', "keep-index", MutuallyExclusive = "index")]
-            public readonly bool keepIndex;
+            public bool keepIndex { get; set; }
 
             [Option("no-keep-index", MutuallyExclusive = "index")]
-            public readonly bool noKeepIndex;
+            public bool noKeepIndex { get; set; }
 
             [Option('q', "quiet")]
-            public readonly bool quiet;
+            public bool quiet { get; set; }
 
             [Option('u', "include-untracked")]
-            public readonly bool includeUntracked;
+            public bool includeUntracked { get; set; }
 
             [Option('a', "all")]
-            public readonly bool all;
+            public bool all { get; set; }
 
             [Value(0)]
-            public readonly string message;
+            public string message { get; set; }
         }
 
         public class Clear
@@ -84,50 +84,50 @@ namespace NOpt.Test.Git.Options
         public class Create
         {
             [Value(0)]
-            public readonly string message;
+            public string message { get; set; }
         }
 
         public class Store
         {
             [Option('m', "message ")]
-            public readonly string message;
+            public string message { get; set; }
 
             [Option('q', "quiet")]
-            public readonly bool quiet;
+            public bool quiet { get; set; }
 
             [Value(0)]
-            public readonly string commit;
+            public string commit { get; set; }
         }
 
         [Verb("list")]
-        public readonly Log list;
+        public Log list { get; set; }
 
         [Verb("show")]
-        public readonly Show show;
+        public Show show { get; set; }
 
         [Verb("drop")]
-        public readonly Drop drop;
+        public Drop drop { get; set; }
 
         [Verb("pop")]
-        public readonly PopApply pop;
+        public PopApply pop { get; set; }
 
         [Verb("apply")]
-        public readonly PopApply apply;
+        public PopApply apply { get; set; }
 
         [Verb("branch")]
-        public readonly Branch branch;
+        public Branch branch { get; set; }
 
         [Verb("save")]
-        public readonly Save save;
+        public Save save { get; set; }
 
         [Verb("clear")]
-        public readonly Clear clear;
+        public Clear clear { get; set; }
 
         [Verb("create")]
-        public readonly Create create;
+        public Create create { get; set; }
 
         [Verb("store")]
-        public readonly Store store;
+        public Store store { get; set; }
 
     }
 }

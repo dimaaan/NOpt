@@ -13,7 +13,7 @@ namespace NOpt
     /// "save" and "load" is a verbs
     /// </example>
     /// </summary>
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = true, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true, Inherited = true)]
     public sealed class VerbAttribute : Attribute
     {
         public VerbAttribute(string name)

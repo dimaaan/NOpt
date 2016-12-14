@@ -31,127 +31,127 @@ namespace NOpt.Test.Git.Options
         public enum Color { ALWAYS, NEVER, AUTO };
 
         [Option('a', "text")]
-        public readonly bool text;
+        public bool text { get; set; }
 
         [Option('I')]
-        public readonly bool I;
+        public bool I { get; set; }
 
         [Option("textconv")]
-        public readonly bool textconv;
+        public bool textconv { get; set; }
 
         [Option('i', "ignore-case")]
-        public readonly bool ignoreCase;
+        public bool ignoreCase { get; set; }
 
         [Option('w', "word-regexp")]
-        public readonly bool wordRegexp;
+        public bool wordRegexp { get; set; }
 
         [Option('v', "invert-match")]
-        public readonly bool invertMatch;
+        public bool invertMatch { get; set; }
 
         [Option('h', MutuallyExclusive = "h")]
-        public readonly bool h;
+        public bool h { get; set; }
 
         [Option('H', MutuallyExclusive = "h")]
-        public readonly bool H;
+        public bool H { get; set; }
 
         [Option("full-name")]
-        public readonly bool fullName;
+        public bool fullName { get; set; }
 
         [Option('e', "extended-regexp")]
-        public readonly bool extendedRegexp;
+        public bool extendedRegexp { get; set; }
 
         [Option('G', "basic-regexp")]
-        public readonly bool basicRegexp;
+        public bool basicRegexp { get; set; }
 
         [Option('P', "perl-regexp")]
-        public readonly bool perlRegexp;
+        public bool perlRegexp { get; set; }
 
         [Option('F', "fixed-strings")]
-        public readonly bool fixedStrings;
+        public bool fixedStrings { get; set; }
 
         [Option('n', "line-number")]
-        public readonly bool lineNumber;
+        public bool lineNumber { get; set; }
 
         [Option("name-only", MutuallyExclusive = "matches")]
         [Option('l', "files-with-matches", MutuallyExclusive = "matches")]
-        public readonly bool filesWithMatches;
+        public bool filesWithMatches { get; set; }
 
         [Option('L', "files-without-matches", MutuallyExclusive = "matches")]
-        public readonly bool filesWithoutMatches;
+        public bool filesWithoutMatches { get; set; }
 
         [Option('O', "open-files-in-pager")]
-        public readonly string openFilesInPager;
+        public string openFilesInPager { get; set; }
 
         [Option('z', "null")]
-        public readonly bool @null;
+        public bool @null { get; set; }
 
         [Option("all-match")]
-        public readonly bool allMatch;
+        public bool allMatch { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option("max-depth")]
-        public readonly int maxDepth;
+        public int maxDepth { get; set; }
 
         [Option("color", MutuallyExclusive = "color")]
-        public readonly Color color = Color.ALWAYS;
+        public Color color { get; set; } = Color.ALWAYS;
 
         [Option("no-color", MutuallyExclusive = "color")]
-        public readonly bool noColor;
+        public bool noColor { get; set; }
 
         [Option("break")]
-        public readonly bool @break;
+        public bool @break { get; set; }
 
         [Option("heading")]
-        public readonly bool heading;
+        public bool heading { get; set; }
 
         [Option('p', "show-function")]
-        public readonly bool showFunction;
+        public bool showFunction { get; set; }
 
         [Option('A', "after-context")]
-        public readonly int afterContext;
+        public int afterContext { get; set; }
 
         [Option('B', "before-context")]
-        public readonly int beforeContext;
+        public int beforeContext { get; set; }
 
         [Option('C', "context")]
-        public readonly int context;
+        public int context { get; set; }
 
         [Option('W', "function-context")]
-        public readonly bool functionContext;
+        public bool functionContext { get; set; }
 
         [Option('f')]
-        public readonly string file;
+        public string file { get; set; }
 
         [Option('e')]
-        public readonly string pattern;
+        public string pattern { get; set; }
 
         [Option("and")]
-        public readonly string and;
+        public string and { get; set; }
 
         [Option("or")]
-        public readonly string or;
+        public string or { get; set; }
 
         [Option("not")]
-        public readonly string not;
+        public string not { get; set; }
 
         [Option("exclude-standard", MutuallyExclusive = "std")]
-        public readonly bool excludeStandard;
+        public bool excludeStandard { get; set; }
 
         [Option("no-exclude-standard", MutuallyExclusive = "std")]
-        public readonly bool noExcludeStandard;
+        public bool noExcludeStandard { get; set; }
 
         [Option("cached", MutuallyExclusive = "search")]
-        public readonly bool cached;
+        public bool cached { get; set; }
 
         [Option("no-index", MutuallyExclusive = "search")]
-        public readonly bool noIndex;
+        public bool noIndex { get; set; }
 
         [Option("untracked", MutuallyExclusive = "search")]
-        public readonly bool untracked;
+        public bool untracked { get; set; }
 
         [Value(0)]
-        public readonly string[] extra;
+        public string[] extra { get; set; }
     }
 }

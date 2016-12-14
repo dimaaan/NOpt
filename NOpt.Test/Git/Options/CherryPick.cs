@@ -15,33 +15,33 @@ namespace NOpt.Test.Git.Options
     public class CherryPick
     {
         [Option('e', "edit")]
-        public readonly bool edit;
+        public bool edit { get; set; }
 
         [Option('n', "no-commit")]
-        public readonly bool noCommit;
+        public bool noCommit { get; set; }
 
         [Option('m', "mainline")]
-        public readonly bool parentNumber;
+        public bool parentNumber { get; set; }
 
         [Option('s', "signoff")]
-        public readonly bool signoff;
+        public bool signoff { get; set; }
 
         [Option('x')]
-        public readonly bool x;
+        public bool x { get; set; }
 
         [Option("ff")]
-        public readonly bool ff;
+        public bool ff { get; set; }
 
         [Option('S', "gpg-sign")]
-        public readonly string S;
+        public string S { get; set; }
 
         [Option("continue")]
-        public readonly bool @continue;
+        public bool @continue { get; set; }
 
         [Option("quit")]
-        public readonly bool quit;
+        public bool quit { get; set; }
 
         [Option("abort")]
-        public readonly bool abort;
+        public bool abort { get; set; }
     }
 }

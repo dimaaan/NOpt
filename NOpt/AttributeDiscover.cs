@@ -18,17 +18,17 @@ namespace NOpt
         /// <returns>
         /// Dictionary with keys: string for short names, long names and verb, int for unbounded value index
         /// </returns>
-        public static Dictionary<object, FieldInfo> Discover(Type optionType, out bool hasVerb)
+        public static Dictionary<object, PropertyInfo> Discover(Type optionType, out bool hasVerb)
         {
             hasVerb = false;
 
-            var attributes = new Dictionary<object, FieldInfo>();
+            var attributes = new Dictionary<object, PropertyInfo>();
 
-            foreach (FieldInfo field in optionType.GetFields())
+            foreach (PropertyInfo prop in optionType.GetProperties())
             {
-                var valueAttributes = field.GetCustomAttributes<ValueAttribute>();
-                var optionsAttributes = field.GetCustomAttributes<OptionAttribute>();
-                var verbAttributes = field.GetCustomAttributes<VerbAttribute>();
+                var valueAttributes = prop.GetCustomAttributes<ValueAttribute>();
+                var optionsAttributes = prop.GetCustomAttributes<OptionAttribute>();
+                var verbAttributes = prop.GetCustomAttributes<VerbAttribute>();
                 int attrCount =
                     (valueAttributes.Any() ? 1 : 0) +
                     (optionsAttributes.Any() ? 1 : 0) +
@@ -36,7 +36,7 @@ namespace NOpt
 
                 if (attrCount > 1)
                     throw new ArgumentException(
-                        "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class field", field.Name);
+                        "ValueAttribute, OptionAttribute and VerbAttribute are mutually exclusive and can not be used in the same class property", prop.Name);
 
                 if (valueAttributes.Any())
                 {
@@ -44,15 +44,15 @@ namespace NOpt
                     {
                         if (attributes.ContainsKey(attr.Index))
                             throw new ArgumentException(
-                                $"Two class fields marked as ValueAttribute with same index: '{attributes[attr.Index].Name}' and {field.Name}");
+                                $"Two class properties marked as ValueAttribute with same index: '{attributes[attr.Index].Name}' and {prop.Name}");
 
-                        attributes[attr.Index] = field;
+                        attributes[attr.Index] = prop;
                     }
                 }
 
                 if(optionsAttributes.Where(a => a.MutuallyExclusive != null).Count() > 1)
                     throw new ArgumentException(
-                                $"Field {field.Name} marked with {nameof(OptionAttribute.MutuallyExclusive)} attribute more than one time");
+                                $"Property {prop.Name} marked with {nameof(OptionAttribute.MutuallyExclusive)} attribute more than one time");
 
                 if (optionsAttributes.Any())
                 {
@@ -61,26 +61,26 @@ namespace NOpt
                         if (attr.ShortName != null)
                         {
                             if (!char.IsLetter(attr.ShortName.Value))
-                                throw new ArgumentException("Short name must be letter", field.Name);
+                                throw new ArgumentException("Short name must be letter", prop.Name);
 
                             string strShortName = attr.ShortName.Value.ToString();
 
                             if (attributes.ContainsKey(strShortName))
                                 throw new ArgumentException(
-                                    $"Two class fields marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {field.Name}");
+                                    $"Two class properties marked as OptionAttribute with same short name: '{attributes[attr.ShortName.Value].Name}' and {prop.Name}");
 
-                            attributes[strShortName] = field;
+                            attributes[strShortName] = prop;
                         }
                         if (attr.LongName != null)
                         {
                             if (!validOptionName.IsMatch(attr.LongName))
-                                throw new ArgumentException("Long name invalid", field.Name);
+                                throw new ArgumentException("Long name invalid", prop.Name);
 
                             if (attributes.ContainsKey(attr.LongName))
                                 throw new ArgumentException(
-                                    $"Two class fields marked with same long name: '{attributes[attr.LongName].Name}' and {field.Name}");
+                                    $"Two class properties marked with same long name: '{attributes[attr.LongName].Name}' and {prop.Name}");
 
-                            attributes[attr.LongName] = field;
+                            attributes[attr.LongName] = prop;
                         }
                     }
                 }
@@ -91,9 +91,9 @@ namespace NOpt
                     {
                         if (attributes.ContainsKey(attr.Name))
                             throw new ArgumentException(
-                                $"Two class fields marked with same long name: '{attributes[attr.Name].Name}' and {field.Name}");
+                                $"Two class properties marked with same long name: '{attributes[attr.Name].Name}' and {prop.Name}");
 
-                        attributes[attr.Name] = field;
+                        attributes[attr.Name] = prop;
                         hasVerb = true;
                     }
                 }

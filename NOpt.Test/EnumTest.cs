@@ -21,7 +21,7 @@ namespace NOpt.Test
                 }
 
                 [Value(0)]
-                public readonly Actions actions;
+                public Actions actions { get; set; }
             }
 
             [Fact]

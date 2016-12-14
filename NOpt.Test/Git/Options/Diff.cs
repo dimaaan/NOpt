@@ -18,183 +18,183 @@ namespace NOpt.Test.Git.Options
 
         [Option('u')]
         [Option('p', "patch")]
-        public readonly bool patch;
+        public bool patch { get; set; }
 
         [Option('s', "no-patch")]
-        public readonly bool noPatch;
+        public bool noPatch { get; set; }
 
         [Option('u', "unified")]
-        public readonly bool unified;
+        public bool unified { get; set; }
 
         [Option("raw")]
-        public readonly bool raw;
+        public bool raw { get; set; }
 
         [Option("patch-with-raw")]
-        public readonly bool patchWithRaw;
+        public bool patchWithRaw { get; set; }
 
         [Option("minimal")]
-        public readonly bool minimal;
+        public bool minimal { get; set; }
 
         [Option("patience")]
-        public readonly bool patience;
+        public bool patience { get; set; }
 
         [Option("histogram")]
-        public readonly bool histogram;
+        public bool histogram { get; set; }
 
         [Option("diff-algorithm")]
-        public readonly DiffAlgorithm diffAlgorithm=DiffAlgorithm.MYERS;
+        public DiffAlgorithm diffAlgorithm { get; set; } = DiffAlgorithm.MYERS;
 
         [Option("stat")]
-        public readonly string stat;
+        public string stat { get; set; }
 
         [Option("numstat")]
-        public readonly bool numstat;
+        public bool numstat { get; set; }
 
         [Option("shortstat")]
-        public readonly bool shortstat;
+        public bool shortstat { get; set; }
 
         [Option("dirstat")]
-        public readonly string dirstat;
+        public string dirstat { get; set; }
 
         [Option("summary")]
-        public readonly bool summary;
+        public bool summary { get; set; }
 
         [Option("patch-with-stat")]
-        public readonly bool patchWithStat;
+        public bool patchWithStat { get; set; }
 
         [Option('z')]
-        public readonly bool z;
+        public bool z { get; set; }
 
         [Option("name-only")]
-        public readonly bool nameOnly;
+        public bool nameOnly { get; set; }
 
         [Option("name-status")]
-        public readonly bool nameStatus;
+        public bool nameStatus { get; set; }
 
         [Option("submodule")]
-        public readonly string submodule;
+        public string submodule { get; set; }
 
         [Option("color")]
-        public readonly Color color;
+        public Color color { get; set; }
 
         [Option("no-color")]
-        public readonly bool noColor;
+        public bool noColor { get; set; }
 
         [Option("word-diff")]
-        public readonly WordDiffMode wordDiff=WordDiffMode.PLAIN;
+        public WordDiffMode wordDiff { get; set; } = WordDiffMode.PLAIN;
 
         [Option("word-diff-regex")]
-        public readonly string wordDiffRegex;
+        public string wordDiffRegex { get; set; }
 
         [Option("color-words")]
-        public readonly string colorWords;
+        public string colorWords { get; set; }
 
         [Option("no-renames")]
-        public readonly bool noRenames;
+        public bool noRenames { get; set; }
 
         [Option("check")]
-        public readonly bool check;
+        public bool check { get; set; }
 
         [Option("full-index")]
-        public readonly bool fullIndex;
+        public bool fullIndex { get; set; }
 
         [Option("binary")]
-        public readonly bool binary;
+        public bool binary { get; set; }
 
         [Option("abbrev")]
-        public readonly int abbrev;
+        public int abbrev { get; set; }
 
         [Option('B', "break-rewrites")]
-        public readonly  string[] breakRewrites;
+        public  string[] breakRewrites { get; set; }
 
         [Option('M', "find-renames")]
-        public readonly int findRenames;
+        public int findRenames { get; set; }
 
         [Option('C', "find-copies")]
-        public readonly int findCopies;
+        public int findCopies { get; set; }
 
         [Option("find-copies-harder")]
-        public readonly bool findCopiesHarder;
+        public bool findCopiesHarder { get; set; }
 
         [Option('D', "irreversible-delete")]
-        public readonly bool irreversibleDelete;
+        public bool irreversibleDelete { get; set; }
 
         [Option('l')]
-        public readonly int l;
+        public int l { get; set; }
 
         [Option('S')]
-        public readonly string S;
+        public string S { get; set; }
 
         [Option('G')]
-        public readonly string G;
+        public string G { get; set; }
 
         [Option("pickaxe-all")]
-        public readonly bool pickaxeAll;
+        public bool pickaxeAll { get; set; }
 
         [Option("pickaxe-regex")]
-        public readonly bool pickaxeRegex;
+        public bool pickaxeRegex { get; set; }
 
         [Option('O')]
-        public readonly string O;
+        public string O { get; set; }
 
         [Option('R')]
-        public readonly bool R;
+        public bool R { get; set; }
 
         [Option("relative")]
-        public readonly string relative;
+        public string relative { get; set; }
 
         [Option('a', "text")]
-        public readonly bool text;
+        public bool text { get; set; }
 
         [Option("ignore-space-at-eol")]
-        public readonly bool ignoreSpaceAtEol;
+        public bool ignoreSpaceAtEol { get; set; }
 
         [Option('b', "ignore-space-change")]
-        public readonly bool ignoreSpaceChange;
+        public bool ignoreSpaceChange { get; set; }
 
         [Option('w', "ignore-all-space")]
-        public readonly bool ignoreAllSpace;
+        public bool ignoreAllSpace { get; set; }
 
         [Option("ignore-blank-lines")]
-        public readonly bool ignoreBlankLines;
+        public bool ignoreBlankLines { get; set; }
 
         [Option("inter-hunk-context")]
-        public readonly string interHunkContext;
+        public string interHunkContext { get; set; }
 
         [Option('W', "function-context")]
-        public readonly bool functionContext;
+        public bool functionContext { get; set; }
 
         [Option("exit-code")]
-        public readonly bool exitCode;
+        public bool exitCode { get; set; }
 
         [Option("quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option("ext-diff")]
-        public readonly bool extDiff;
+        public bool extDiff { get; set; }
 
         [Option("no-ext-diff")]
-        public readonly bool noExtDiff;
+        public bool noExtDiff { get; set; }
 
         [Option("textconv")]
-        public readonly bool textconv;
+        public bool textconv { get; set; }
 
         [Option("no-textconv")]
-        public readonly bool noTextconv;
+        public bool noTextconv { get; set; }
 
         [Option("ignore-submodules")]
-        public readonly IgnoreSubmodules ignoreSubmodules=IgnoreSubmodules.ALL;
+        public IgnoreSubmodules ignoreSubmodules { get; set; } = IgnoreSubmodules.ALL;
 
         [Option("src-prefix")]
-        public readonly string srcPrefix;
+        public string srcPrefix { get; set; }
 
         [Option("dst-prefix")]
-        public readonly string dstPrefix;
+        public string dstPrefix { get; set; }
 
         [Option("no-prefix")]
-        public readonly string noPrefix;
+        public string noPrefix { get; set; }
 
         [Value(0)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
     }
 }

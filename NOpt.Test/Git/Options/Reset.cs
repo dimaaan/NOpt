@@ -10,30 +10,30 @@ namespace NOpt.Test.Git.Options
     public class Reset
     {
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option('p', "patch ")]
-        public readonly bool patch;
+        public bool patch { get; set; }
 
         [Option("soft", MutuallyExclusive = "mode")]
-        public readonly bool soft;
+        public bool soft { get; set; }
 
         [Option("mixed", MutuallyExclusive = "mode")]
-        public readonly bool mixed;
+        public bool mixed { get; set; }
 
         [Option('N', MutuallyExclusive = "mode")]
-        public readonly bool N;
+        public bool N { get; set; }
 
         [Option("hard", MutuallyExclusive = "mode")]
-        public readonly bool hard;
+        public bool hard { get; set; }
 
         [Option("merge", MutuallyExclusive = "mode")]
-        public readonly bool merge;
+        public bool merge { get; set; }
 
         [Option("keep", MutuallyExclusive = "mode")]
-        public readonly bool keep;
+        public bool keep { get; set; }
 
         [Value(0)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
     }
 }

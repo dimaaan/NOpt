@@ -44,17 +44,17 @@ namespace NOpt
         private static void Parse(string[] args, object opt)
         {
             bool hasVerb;
-            Dictionary<object, FieldInfo> attributes = AttributeDiscover.Discover(opt.GetType(), out hasVerb);
+            Dictionary<object, PropertyInfo> attributes = AttributeDiscover.Discover(opt.GetType(), out hasVerb);
             string firstArg = args.FirstOrDefault();
 
             // check first argument is a verb
             if (hasVerb && firstArg != null && attributes.ContainsKey(firstArg))
             {
-                FieldInfo field = attributes[firstArg];
-                object verbInstance = Activator.CreateInstance(field.FieldType); // TODO handle errors
+                PropertyInfo prop = attributes[firstArg];
+                object verbInstance = Activator.CreateInstance(prop.PropertyType); // TODO handle errors
 
                 Parse(args.Skip(1).ToArray(), verbInstance);
-                field.SetValue(opt, verbInstance);
+                prop.SetValue(opt, verbInstance);
             }
             else
             {
@@ -64,7 +64,7 @@ namespace NOpt
 
 
         /// <returns>null if success, otherwise error message</returns>
-        private static void TokenizeUnixStyle<T>(string[] args, T opt, Dictionary<object, FieldInfo> attributes)
+        private static void TokenizeUnixStyle<T>(string[] args, T opt, Dictionary<object, PropertyInfo> attributes)
         {
             int valuesCount = 0;
             var mutuallyExclusiveGroups = new List<string>();
@@ -127,22 +127,22 @@ namespace NOpt
         /// <param name="attachedValue">In case of --file=r.txt 'r.txt' is attached value</param>
         /// <param name="e">Enumerator to get value if need and no attachedValue exist. Null if option do not have a value (ex. -abc)</param>
         /// <returns></returns>
-        private static void setOption(object opt, Dictionary<object, FieldInfo> attributes, string name, string attachedValue, 
+        private static void setOption(object opt, Dictionary<object, PropertyInfo> attributes, string name, string attachedValue, 
             string[] args, ref int i, List<string> mutuallyExclusiveGroups, char optionStartSymbol)
         {
-            FieldInfo fieldInfo;
+            PropertyInfo propInfo;
 
-            if (!attributes.TryGetValue(name, out fieldInfo))
+            if (!attributes.TryGetValue(name, out propInfo))
                 throw new FormatException($"Invalid option: {name}");
 
-            if (fieldInfo.FieldType == typeof(bool))
+            if (propInfo.PropertyType == typeof(bool))
             {
                 if(attachedValue != null)
                     throw new FormatException($"Option {name} should not have a value. Passed value: {attachedValue}");
 
-                AssignToField(opt, fieldInfo, true);
+                AssignToProp(opt, propInfo, true);
             }
-            else if(fieldInfo.FieldType == typeof(string[]))
+            else if(propInfo.PropertyType == typeof(string[]))
             {
                 if (attachedValue != null)
                     throw new FormatException($"Bad syntax near option {name}");
@@ -163,7 +163,7 @@ namespace NOpt
                 }
 
                 if(values.Count != 0)
-                    AssignToField(opt, fieldInfo, values.ToArray());
+                    AssignToProp(opt, propInfo, values.ToArray());
             }
             else
             {
@@ -175,11 +175,11 @@ namespace NOpt
                 if (String.IsNullOrEmpty(value))
                     throw new FormatException($"Value of {name} is empty string");
                     
-                AssignToField(opt, fieldInfo, value);
+                AssignToProp(opt, propInfo, value);
             }
 
             // check that no mutually exclusive options are used
-            var optionAttr = fieldInfo.GetCustomAttributes<OptionAttribute>().Where(a => a.MutuallyExclusive != null).FirstOrDefault();
+            var optionAttr = propInfo.GetCustomAttributes<OptionAttribute>().Where(a => a.MutuallyExclusive != null).FirstOrDefault();
             if(optionAttr != null)
             {
                 if(mutuallyExclusiveGroups.Contains(optionAttr.MutuallyExclusive))
@@ -200,23 +200,23 @@ namespace NOpt
         }
 
 
-        private static void setValue(object opt, Dictionary<object, FieldInfo> attributes, int index, string value)
+        private static void setValue(object opt, Dictionary<object, PropertyInfo> attributes, int index, string value)
         {
-            FieldInfo fieldInfo;
+            PropertyInfo propInfo;
 
-            if (!attributes.TryGetValue(index, out fieldInfo))
+            if (!attributes.TryGetValue(index, out propInfo))
                 throw new FormatException($"Invalid argument: {value}");
 
             if (String.IsNullOrEmpty(value))
-                throw new FormatException($"Value for {fieldInfo.Name} is null or empty string");
+                throw new FormatException($"Value for {propInfo.Name} is null or empty string");
 
-            AssignToField(opt, fieldInfo, value);
+            AssignToProp(opt, propInfo, value);
         }
 
 
-        private static void AssignToField(object opt, FieldInfo f, object value)
+        private static void AssignToProp(object opt, PropertyInfo f, object value)
         {
-            if(f.FieldType.IsEnum)
+            if(f.PropertyType.IsEnum)
             {
                 object enumValue;
 
@@ -224,11 +224,11 @@ namespace NOpt
                 {
                     string strValue = (string)value;
                     strValue = strValue.Replace('-', '_'); // so we could map "no-file" to enum { NO_FILE }
-                    enumValue = Enum.Parse(f.FieldType, strValue, true);
+                    enumValue = Enum.Parse(f.PropertyType, strValue, true);
                 }
                 catch(Exception e)
                 {
-                    throw new FormatException($"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.FieldType))}", e);
+                    throw new FormatException($"Bad argument: '{value}'. Expected values: {String.Join(",", Enum.GetNames(f.PropertyType))}", e);
                 }
 
                 f.SetValue(opt, enumValue);

@@ -15,13 +15,13 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('a')]
-                public readonly bool opt1; // will be "file1"
+                public bool opt1 { get; set; } // will be "file1"
 
                 [Option('b')]
-                public readonly bool opt2; // will be "file2"
+                public bool opt2 { get; set; } // will be "file2"
 
                 [Option('c')]
-                public readonly bool opt3; // will be null
+                public bool opt3 { get; set; } // will be null
             }
 
             private Options parse(params string[] args)
@@ -86,10 +86,10 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('f', LongName = "file")]
-                public readonly string file;
+                public string file { get; set; }
 
                 [Option("action")]
-                public readonly bool action;
+                public bool action { get; set; }
             }
 
             private Options parse(params string[] args)
@@ -119,7 +119,7 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('f', LongName = "f")]
-                public readonly string file;
+                public string file { get; set; }
             }
 
             [Fact]
@@ -134,7 +134,7 @@ namespace NOpt.Test
             public class Options
             {
                 [Option("file")]
-                public readonly string file;
+                public string file { get; set; }
             }
 
             [Fact]
@@ -157,16 +157,16 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('a', MutuallyExclusive = "mut")]
-                public readonly bool a;
+                public bool a { get; set; }
 
                 [Option('b', "bb", MutuallyExclusive = "mut")]
-                public readonly bool b;
+                public bool b { get; set; }
 
                 [Option('c', MutuallyExclusive = "mut2")]
-                public readonly bool c;
+                public bool c { get; set; }
 
                 [Option('d')]
-                public readonly bool d;
+                public bool d { get; set; }
             }
 
             private Options parse(params string[] args)
@@ -198,10 +198,10 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('s', "str")]
-                public string[] strings;
+                public string[] strings { get; set; }
 
                 [Option('b')]
-                public bool b;
+                public bool b { get; set; }
             }
 
             [Fact]

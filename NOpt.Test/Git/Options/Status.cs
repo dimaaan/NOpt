@@ -10,33 +10,33 @@ namespace NOpt.Test.Git.Options
         public enum IgnoreSubmodules { NONE, UNTRACKED, DIRTY, ALL }
 
         [Option('s', "short")]
-        public readonly bool @short;
+        public bool @short { get; set; }
 
         [Option('b', "branch")]
-        public readonly bool branch;
+        public bool branch { get; set; }
 
         [Option("porcelain")]
-        public readonly bool porcelain;
+        public bool porcelain { get; set; }
 
         [Option("long")]
-        public readonly bool @long;
+        public bool @long { get; set; }
 
         [Option('u', "untracked-files")]
-        public readonly UntrackedFileMode untrackedFiles = UntrackedFileMode.ALL;
+        public UntrackedFileMode untrackedFiles { get; set; } = UntrackedFileMode.ALL;
 
         [Option("ignore-submodules")]
-        public readonly IgnoreSubmodules ignoreSubmodules = IgnoreSubmodules.ALL;
+        public IgnoreSubmodules ignoreSubmodules { get; set; } = IgnoreSubmodules.ALL;
 
         [Option("ignored")]
-        public readonly bool ignored;
+        public bool ignored { get; set; }
 
         [Option('z')]
-        public readonly bool z;
+        public bool z { get; set; }
 
         [Option("column", MutuallyExclusive = "column")]
-        public readonly bool column;
+        public bool column { get; set; }
 
         [Option("no-column", MutuallyExclusive = "column")]
-        public readonly bool noColumn;
+        public bool noColumn { get; set; }
     }
 }

@@ -17,60 +17,60 @@ namespace NOpt.Test.Git.Options
         public enum RecursiveSubmodulesMode { YES, ON_DEMAIND, NO }
 
         [Option("all")]
-        public readonly bool all;
+        public bool all { get; set; }
 
         [Option('a', "append")]
-        public readonly bool append;
+        public bool append { get; set; }
 
         [Option("depth")]
-        public readonly bool depth;
+        public bool depth { get; set; }
 
         [Option("unshallow")]
-        public readonly bool unshallow;
+        public bool unshallow { get; set; }
 
         [Option("update-shallow")]
-        public readonly bool updateShallow;
+        public bool updateShallow { get; set; }
 
         [Option("dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('k', "keep")]
-        public readonly bool keep;
+        public bool keep { get; set; }
 
         [Option("multiple")]
-        public readonly bool multiple;
+        public bool multiple { get; set; }
 
         [Option('p', "prune")]
-        public readonly bool prune;
+        public bool prune { get; set; }
 
         [Option('n', "no-tags")]
-        public readonly bool noTags;
+        public bool noTags { get; set; }
 
         [Option('t', "tags")]
-        public readonly bool tags;
+        public bool tags { get; set; }
 
         [Option("recurse-submodules")]
-        public readonly RecursiveSubmodulesMode recurseSubmodules=RecursiveSubmodulesMode.YES;
+        public RecursiveSubmodulesMode recurseSubmodules { get; set; } = RecursiveSubmodulesMode.YES;
 
         [Option('u', "update-head-ok")]
-        public readonly bool updateHeadOk;
+        public bool updateHeadOk { get; set; }
 
         [Option("upload-pack")]
-        public readonly string uploadPack;
+        public string uploadPack { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option('v', "verbose")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
 
         [Option("progress")]
-        public readonly bool progress;
+        public bool progress { get; set; }
 
         [Value(0)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
     }
 }

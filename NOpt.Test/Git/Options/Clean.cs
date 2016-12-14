@@ -10,30 +10,30 @@ namespace NOpt.Test.Git.Options
     public class Clean
     {
         [Option('d')]
-        public readonly bool d;
+        public bool d { get; set; }
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('i', "interactive")]
-        public readonly bool interactive;
+        public bool interactive { get; set; }
 
         [Option('n', "dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option('e', "exclude")]
-        public readonly string exclude;
+        public string exclude { get; set; }
 
         [Option('x', MutuallyExclusive = "x")]
-        public readonly bool x;
+        public bool x { get; set; }
 
         [Option('X', MutuallyExclusive = "x")]
-        public readonly bool X;
+        public bool X { get; set; }
 
         [Value(0)]
-        public readonly string[] path;
+        public string[] path { get; set; }
     }
 }

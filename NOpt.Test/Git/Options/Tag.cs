@@ -19,57 +19,57 @@ namespace NOpt.Test.Git.Options
         public enum CleanUpMode { VERBATIM, WHITESPACE, STRIP };
 
         [Option('a', "annotate", MutuallyExclusive = "a")]
-        public readonly bool annotate;
+        public bool annotate { get; set; }
 
         [Option('s', "sign", MutuallyExclusive = "a")]
-        public readonly bool sign;
+        public bool sign { get; set; }
 
         [Option('u', "local-user", MutuallyExclusive = "a")]
-        public readonly string localUser;
+        public string localUser { get; set; }
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('d', "delete")]
-        public readonly bool delete;
+        public bool delete { get; set; }
 
         [Option('v', "verify")]
-        public readonly bool verify;
+        public bool verify { get; set; }
 
         [Option('n')]
-        public readonly int n;
+        public int n { get; set; }
 
         [Option('l', "list")]
-        public readonly string list;
+        public string list { get; set; }
 
         [Option("sort")]
-        public readonly string sort;
+        public string sort { get; set; }
 
         [Option("column", MutuallyExclusive = "column")]
-        public readonly string column;
+        public string column { get; set; }
 
         [Option("no-column", MutuallyExclusive = "column")]
-        public readonly bool noColumn;
+        public bool noColumn { get; set; }
 
         [Option("contains")]
-        public readonly string contains;
+        public string contains { get; set; }
 
         [Option("points-at")]
-        public readonly string pointsAt;
+        public string pointsAt { get; set; }
 
         [Option('m', "message")]
-        public readonly string message;
+        public string message { get; set; }
 
         [Option('f', "file")]
-        public readonly string file;
+        public string file { get; set; }
 
         [Option("cleanup")]
-        public readonly CleanUpMode cleanup = CleanUpMode.STRIP;
+        public CleanUpMode cleanup { get; set; } = CleanUpMode.STRIP;
 
         [Value(0)]
-        public readonly string tagname;
+        public string tagname { get; set; }
 
         [Value(1)]
-        public readonly string[] extras;
+        public string[] extras { get; set; }
     }
 }

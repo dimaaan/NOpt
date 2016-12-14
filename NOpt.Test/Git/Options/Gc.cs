@@ -10,21 +10,21 @@ namespace NOpt.Test.Git.Options
     public class Gc
     {
         [Option("aggressive")]
-        public readonly bool aggressive;
+        public bool aggressive { get; set; }
 
         [Option("auto")]
-        public readonly bool auto;
+        public bool auto { get; set; }
 
         [Option("quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option("prune")]
-        public readonly string prune = "2 weeks";
+        public string prune { get; set; } = "2 weeks";
 
         [Option("no-prune")]
-        public readonly bool noPrune;
+        public bool noPrune { get; set; }
 
         [Option("force")]
-        public readonly bool force;
+        public bool force { get; set; }
     }
 }

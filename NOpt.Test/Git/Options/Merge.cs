@@ -16,51 +16,51 @@ namespace NOpt.Test.Git.Options
     public class Merge
     {
         [Option("stat", MutuallyExclusive = "stat")]
-        public readonly bool stat;
+        public bool stat { get; set; }
 
         [Option('n', "no-stat", MutuallyExclusive = "stat")]
-        public readonly bool noStat;
+        public bool noStat { get; set; }
 
         [Option("commit", MutuallyExclusive = "commit")]
-        public readonly bool commit;
+        public bool commit { get; set; }
 
         [Option("no-commit", MutuallyExclusive = "commit")]
-        public readonly bool noCommit;
+        public bool noCommit { get; set; }
 
         [Option("squash", MutuallyExclusive = "squash")]
-        public readonly bool squash;
+        public bool squash { get; set; }
 
         [Option("no-squash", MutuallyExclusive = "squash")]
-        public readonly bool noSquash;
+        public bool noSquash { get; set; }
 
         [Option('e', "edit", MutuallyExclusive = "edit")]
-        public readonly bool edit;
+        public bool edit { get; set; }
 
         [Option("no-edit", MutuallyExclusive = "edit")]
-        public readonly bool noEdit;
+        public bool noEdit { get; set; }
 
         [Option('s', "strategy")]
-        public readonly string strategy;
+        public string strategy { get; set; }
 
         [Option('X', "strategy-option")]
-        public readonly string strategyOption;
+        public string strategyOption { get; set; }
 
         [Option('S', "gpg-sign")]
-        public readonly string gpgSign;
+        public string gpgSign { get; set; }
 
         [Option("rerere-autoupdate", MutuallyExclusive = "rerere")]
-        public readonly bool rerereAutoupdate;
+        public bool rerereAutoupdate { get; set; }
 
         [Option("no-rerere-autoupdate", MutuallyExclusive = "rerere")]
-        public readonly bool noRerereAutoupdate;
+        public bool noRerereAutoupdate { get; set; }
 
         [Option('m')]
-        public readonly string m;
+        public string m { get; set; }
 
         [Option("abort")]
-        public readonly bool abort;
+        public bool abort { get; set; }
 
         [Value(0)]
-        public string[] extras;
+        public string[] extras { get; set; }
     }
 }

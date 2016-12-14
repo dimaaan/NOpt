@@ -27,81 +27,81 @@ namespace NOpt.Test.Git.Options
         public enum ThreadStyle { SHALLOW, DEEP };
 
         [Option('k', "keep-subject")]
-        public readonly bool keepSubject;
+        public bool keepSubject { get; set; }
 
         [Option('o', "output-directory", MutuallyExclusive = "o")]
-        public readonly string outputDirectory;
+        public string outputDirectory { get; set; }
 
         [Option("stdout", MutuallyExclusive = "o")]
-        public readonly bool stdOut;
+        public bool stdOut { get; set; }
 
         [Option("thread", MutuallyExclusive = "thread")]
-        public readonly ThreadStyle style = ThreadStyle.SHALLOW;
+        public ThreadStyle style { get; set; } = ThreadStyle.SHALLOW;
 
         [Option("no-thread", MutuallyExclusive = "thread")]
-        public readonly bool NoThread;
+        public bool NoThread { get; set; }
 
         [Option("attach", MutuallyExclusive = "attach")]
-        public readonly string attach;
+        public string attach { get; set; }
 
         [Option("inline", MutuallyExclusive = "attach")]
-        public readonly string inline;
+        public string inline { get; set; }
 
         [Option("no-attach", MutuallyExclusive = "attach")]
-        public readonly bool noAttach;
+        public bool noAttach { get; set; }
 
         [Option('s', "signoff")]
-        public readonly bool signoff;
+        public bool signoff { get; set; }
 
         [Option("signature", MutuallyExclusive = "signature")]
-        public readonly string signature;
+        public string signature { get; set; }
 
         [Option("no-signature", MutuallyExclusive = "signature")]
-        public readonly bool noSignature;
+        public bool noSignature { get; set; }
 
         [Option('n', "numbered", MutuallyExclusive = "numbered")]
-        public readonly bool numbered;
+        public bool numbered { get; set; }
 
         [Option('N', "no-numbered", MutuallyExclusive = "numbered")]
-        public readonly bool noNumbered;
+        public bool noNumbered { get; set; }
 
         [Option("start-number")]
-        public readonly int startNumber = 1;
+        public int startNumber { get; set; } = 1;
 
         [Option("numbered-files")]
-        public readonly bool numberedFiles;
+        public bool numberedFiles { get; set; }
 
         [Option("in-reply-to")]
-        public readonly string inReplyTo;
+        public string inReplyTo { get; set; }
 
         [Option("suffix")]
-        public readonly string suffix = ".patch";
+        public string suffix { get; set; } = ".patch";
 
         [Option("ignore-if-in-upstream")]
-        public readonly bool ignoreIfInUpstream;
+        public bool ignoreIfInUpstream { get; set; }
 
         [Option("subject-prefix")]
-        public readonly string subjectPrefix;
+        public string subjectPrefix { get; set; }
 
         [Option('v', "reroll-count")]
-        public readonly int rerollCount;
+        public int rerollCount { get; set; }
 
         [Option("to")]
-        public readonly string to;
+        public string to { get; set; }
 
         [Option("cc")]
-        public readonly string cc;
+        public string cc { get; set; }
 
         [Option("cover-letter", MutuallyExclusive = "cover-letter")]
-        public readonly bool coverLetter;
+        public bool coverLetter { get; set; }
 
         [Option("no-cover-letter", MutuallyExclusive = "cover-letter")]
-        public readonly bool noCoverLetter;
+        public bool noCoverLetter { get; set; }
 
         [Option('q', "quiet")]
-        public readonly bool quiet;
+        public bool quiet { get; set; }
 
         [Option("notes")]
-        public readonly string notes;
+        public string notes { get; set; }
     }
 }

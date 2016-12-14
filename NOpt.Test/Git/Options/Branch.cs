@@ -23,82 +23,82 @@ namespace NOpt.Test.Git.Options
         public enum ColorWhen { ALWAYS, NEVER, AUTO }
 
         [Option("color", MutuallyExclusive = "color")]
-        public readonly ColorWhen color = ColorWhen.ALWAYS;
+        public ColorWhen color { get; set; } = ColorWhen.ALWAYS;
 
         [Option("no-color", MutuallyExclusive = "color")]
-        public readonly bool noColor;
+        public bool noColor { get; set; }
 
         [Option('r', "remotes")]
-        public readonly bool remotes;
+        public bool remotes { get; set; }
 
         [Option('a', "all")]
-        public readonly bool all;
+        public bool all { get; set; }
 
         [Option("list")]
-        public readonly bool list;
+        public bool list { get; set; }
 
         [Option('v', "verbose")]
         [Option("vv")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
 
         [Option("abbrev", MutuallyExclusive = "abbrev")]
-        public readonly uint abbrev;
+        public uint abbrev { get; set; }
 
         [Option("no-abbrev", MutuallyExclusive = "abbrev")]
-        public readonly uint noAbbrev;
+        public uint noAbbrev { get; set; }
 
         [Option("column", MutuallyExclusive = "column")]
-        public readonly string[] column;
+        public string[] column { get; set; }
 
         [Option("no-column", MutuallyExclusive = "column")]
-        public readonly uint noColumn;
+        public uint noColumn { get; set; }
 
         [Option("merged", MutuallyExclusive = "mnc")]
-        public readonly string merged;
+        public string merged { get; set; }
 
         [Option("no-merged", MutuallyExclusive = "mnc")]
-        public readonly string noMerged;
+        public string noMerged { get; set; }
 
         [Option("contains", MutuallyExclusive = "mnc")]
-        public readonly string contains;
+        public string contains { get; set; }
 
         [Option("set-upstream", MutuallyExclusive = "upstream")]
-        public readonly string setUpstream;
+        public string setUpstream { get; set; }
 
         [Option("track", MutuallyExclusive = "upstream")]
-        public readonly string track;
+        public string track { get; set; }
 
         [Option("no-track", MutuallyExclusive = "upstream")]
-        public readonly string noTrack;
+        public string noTrack { get; set; }
 
         [Option('l', "create-reflog")]
-        public readonly string createReflog;
+        public string createReflog { get; set; }
 
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('u', "set-upstream-to")]
-        public readonly string setUpstreamTo;
+        public string setUpstreamTo { get; set; }
 
         [Option("unset-upstream")]
-        public readonly string unsetUpstream;
+        public string unsetUpstream { get; set; }
 
         [Option('m', "move", MutuallyExclusive = "move")]
-        public readonly bool move;
+        public bool move { get; set; }
 
         [Option('M', MutuallyExclusive = "move")]
-        public readonly bool moveOverwrite;
+        public bool moveOverwrite { get; set; }
 
         [Option('d', "delete", MutuallyExclusive = "delete")]
-        public readonly bool delete;
+        public bool delete { get; set; }
 
         [Option('D', MutuallyExclusive = "delete")]
-        public readonly bool deleteOverwrite;
+        public bool deleteOverwrite { get; set; }
 
         [Option("edit-description")]
-        public readonly bool editDescription;
+        public bool editDescription { get; set; }
 
         [Value(0)]
-        public readonly string[] extra;
+        public string[] extra { get; set; }
     }
 }

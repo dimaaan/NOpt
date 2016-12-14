@@ -10,18 +10,18 @@ namespace NOpt.Test.Git.Options
     public class Mv
     {
         [Option('f', "force")]
-        public readonly bool force;
+        public bool force { get; set; }
 
         [Option('k')]
-        public readonly bool k;
+        public bool k { get; set; }
 
         [Option('n', "dry-run")]
-        public readonly bool dryRun;
+        public bool dryRun { get; set; }
 
         [Option('v', "verbose")]
-        public readonly bool verbose;
+        public bool verbose { get; set; }
 
         [Value(0)]
-        public string[] extras;
+        public string[] extras { get; set; }
     }
 }
