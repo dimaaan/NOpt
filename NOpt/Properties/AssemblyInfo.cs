@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NOpt")]
 [assembly: AssemblyDescription("Command line arguments parser. See https://github.com/dimaaan/NOpt")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Dmitry Anshilevich")]
 [assembly: AssemblyProduct("NOpt")]
 [assembly: AssemblyCopyright("Copyright © 2016")]
 [assembly: AssemblyTrademark("")]
