@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NOpt.Test.Git.Options
+﻿namespace NOpt.Test.Git.Options
 {
     /*
     git push    [--all | --mirror | --tags] [--follow-tags] [-n | --dry-run] [--receive-pack=<git-receive-pack>]

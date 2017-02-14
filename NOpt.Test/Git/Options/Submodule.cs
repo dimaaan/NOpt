@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NOpt.Test.Git.Options
+﻿namespace NOpt.Test.Git.Options
 {
     /*
     git submodule [--quiet] add [-b <branch>] [-f|--force] [--name <name>]
@@ -16,7 +14,7 @@ namespace NOpt.Test.Git.Options
     git submodule [--quiet] foreach [--recursive] <command>
     git submodule [--quiet] sync [--] [<path>…]
     */
-    
+
     public class Submodule
     {
         public class Add

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NOpt.Test.Git.Options
+﻿namespace NOpt.Test.Git.Options
 {
     /*
     git reset [-q] [<tree-ish>] [--] <paths>…

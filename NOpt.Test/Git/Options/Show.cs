@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NOpt.Test.Git.Options
+﻿namespace NOpt.Test.Git.Options
 {
     // git show [options] <object>…
     public class Show
