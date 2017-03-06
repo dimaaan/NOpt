@@ -29,11 +29,11 @@ class Program
 
 ## Usage
 
-To use NOpt you need to:
+1) install with `Install-Package NOpt`
 
-1) define a class that holds an options
+2) define a class that holds an options
 
-2) call NOpt.Parse method to get an options
+3) call NOpt.Parse method to get an options
 
 
 ### Flags
