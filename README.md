@@ -32,6 +32,7 @@ class Program
 To use NOpt you need to:
 
 1) define a class that holds an options
+
 2) call NOpt.Parse method to get an options
 
 
@@ -207,7 +208,7 @@ With this options you can:
 
 >Verbs are mutually exclusive so `program add push` will fail.
 
-Remember that NOpt don't touch propertyes default values so to check what verb was used:
+Remember that NOpt don't touch properties default values so to check what verb was used:
 ``` cs
 if(opt.help != null) {
     // show help
