@@ -24,7 +24,7 @@ namespace NOpt
 
             var attributes = new Dictionary<object, PropertyInfo>();
 
-            foreach (PropertyInfo prop in optionType.GetProperties())
+            foreach (PropertyInfo prop in optionType.GetTypeInfo().DeclaredProperties)
             {
                 var valueAttributes = prop.GetCustomAttributes<ValueAttribute>();
                 var optionsAttributes = prop.GetCustomAttributes<OptionAttribute>();

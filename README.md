@@ -1,6 +1,8 @@
 # NOpt
 
-Small and flexible command line parser
+Small, flexible and crossplatform command line parser.
+
+> Target: .NET Standard 1.4
 
 
 ## Show me the code

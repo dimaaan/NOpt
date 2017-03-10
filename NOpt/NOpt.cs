@@ -214,7 +214,7 @@ namespace NOpt
 
         private static void AssignToProp(object opt, PropertyInfo f, object value)
         {
-            if(f.PropertyType.IsEnum)
+            if(f.PropertyType.GetTypeInfo().IsEnum)
             {
                 object enumValue;
 
