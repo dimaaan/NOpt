@@ -10,13 +10,13 @@ Small, flexible and crossplatform command line parser.
 ``` cs
 class Options {
     [Option('f', "flag")]
-    public bool Flag  { get; set; };
+    public bool Flag  { get; set; }
 
     [Option('p', "path")]
-    public string Path  { get; set; };
+    public string Path  { get; set; }
 
     [Value(0)]
-    public string[] OtherOpts { get; set; };
+    public string[] OtherOpts { get; set; }
 }
 
 class Program
