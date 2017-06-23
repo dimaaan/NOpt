@@ -23,7 +23,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        var opt = NOpt.Parse<Options>(args);
+        var opt = NOpt.NOpt.Parse<Options>(args)
         // Use opt!
     }
 }
@@ -43,12 +43,12 @@ class Program
 Create a boolean property to hold a flag
 ``` cs
 [Option(shortName: 'f', longName: "flag")]
-public bool Flag { get; set; };
+public bool Flag { get; set; }
 ```
 or more shorter
 ``` cs
 [Option('f', "flag")]
-public bool Flag  { get; set; };
+public bool Flag  { get; set; }
 ```
 Now if you call `progam -f` or `program --flag` this flag will be set to `true`.
 > You can use only short name or only long name or both to name your flag
@@ -59,7 +59,7 @@ Now if you call `progam -f` or `program --flag` this flag will be set to `true`.
 Create property to hold option with value like
 ``` cs
 [Option('p', "path")]
-public string Path  { get; set; };
+public string Path  { get; set; }
 ```
 Now you can call 
 
@@ -72,7 +72,7 @@ Now you can call
 Option propery can be an array also:
 ``` cs
 [Option('p', "pets")]
-public string Pets  { get; set; };
+public string[] Pets  { get; set; }
 ```
 
 So
@@ -88,7 +88,7 @@ will set `Pets` field to `{"cats", "gods"}`
 
 ``` cs
 [Value(0)]
-public string Dir  { get; set; };
+public string Dir  { get; set; }
 ```
 Now you can call 
 
@@ -102,7 +102,7 @@ Now you can call
 
 ``` cs
 [Value(1)]
-public string[] OtherParams { get; set; }; 
+public string[] OtherParams { get; set; }
 ```
 Now you can call `program mydir a b c` and `otherParams` will be set to `{"a", "b", "c"}`
 > mydir option was ignored because we don't have property with attribute `[Value(0)]` here
@@ -114,7 +114,7 @@ enum Color {RED, GREEN, NO_COLOR}
 ```
 ``` cs
 [Option('c', "color")]
-public Color color  { get; set; };
+public Color color  { get; set; }
 ```
 Now you can call 
 
