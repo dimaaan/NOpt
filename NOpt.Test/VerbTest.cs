@@ -11,11 +11,11 @@ namespace NOpt.Test
                 public class PushOptions
                 {
                     [Option('r', "repo")]
-                    public string repo { get; set; }
+                    public string Repo { get; set; }
                 }
 
                 [Verb("push")]
-                public PushOptions push { get; set; }
+                public PushOptions Push { get; set; }
             }
 
             Options opt;
@@ -28,8 +28,8 @@ namespace NOpt.Test
             [Fact]
             public void Check()
             {
-                Assert.NotNull(opt.push);
-                Assert.Equal("master", opt.push.repo);
+                Assert.NotNull(opt.Push);
+                Assert.Equal("master", opt.Push.Repo);
             }
         }
     }

@@ -6,7 +6,7 @@ namespace NOpt.Test
     public class GitTest
     {
         [Fact]
-        public void add()
+        public void Add()
         {
             var opt = NOpt.Parse<Options>(new string[] { "add", "-nvf" });
 
