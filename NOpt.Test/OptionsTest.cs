@@ -11,13 +11,13 @@ namespace NOpt.Test
             public class Options
             {
                 [Option('a')]
-                public bool Opt1 { get; set; } // will be "file1"
+                public bool Opt1 { get; set; }
 
                 [Option('b')]
-                public bool Opt2 { get; set; } // will be "file2"
+                public bool Opt2 { get; set; }
 
                 [Option('c')]
-                public bool Opt3 { get; set; } // will be null
+                public bool Opt3 { get; set; }
             }
 
             private Options Parse(params string[] args)
@@ -26,53 +26,49 @@ namespace NOpt.Test
             }
 
             [Fact]
-            public void Check()
+            public void ShouldThrowOnNull()
             {
                 Assert.Throws<ArgumentNullException>(() => Parse(null));
+            }
 
-                Options opt;
-
-                opt = Parse(new string[] { });
+            [Theory]
+            [InlineData(new object[] { new string[] { } })]
+            [InlineData(new object[] { new string[] { null } })]
+            [InlineData(new object[] { new string[] { null, null } })]
+            [InlineData(new object[] { new string[] { null, null, null } })]
+            [InlineData(new object[] { new string[] { null, null, null, null } })]
+            public void ShouldLeaveDefaultValuesOnArrayWithNulls(string[] args)
+            {
+                Options opt = Parse(args);
                 Assert.False(opt.Opt1 && opt.Opt2 && opt.Opt3);
+            }
 
-                opt = Parse(new string[] { null });
-                Assert.False(opt.Opt1 && opt.Opt2 && opt.Opt3);
+            [Theory]
+            [InlineData("")]
+            [InlineData("-")]
+            [InlineData("--")]
+            public void ShouldThrowOnBadStrings(string input)
+            {
+                Assert.Throws<FormatException>(() => Parse(input));
+            }
 
-                opt = Parse(new string[] { null, null });
-                Assert.False(opt.Opt1 && opt.Opt2 && opt.Opt3);
+            [Theory]
+            [InlineData(true, false, false, "-a")]
+            [InlineData(false, true, false, "-b")]
+            [InlineData(false, false, true, "-c")]
+            [InlineData(true, true, true, "-abc")]
+            [InlineData(false, true, true, "-bc")]
+            [InlineData(true, false, false, "-aa")] // TODO fail??
+            [InlineData(true, true, true, "-a", "-b", "-c")]
+            [InlineData(false, true, true, "-b", "-c")]
+            [InlineData(true, false, false, "-a", "-a")] // TODO fail??
+            public void ShouldParse(bool expectedOpt1, bool expectedOpt2, bool expectedOpt3, params string[] input)
+            {
+                Options opt = Parse(input);
 
-                Assert.Throws<FormatException>(() => Parse(""));
-
-                Assert.Throws<FormatException>(() => Parse("--"));
-
-                Assert.Throws<FormatException>(() => opt = Parse("-"));
-
-                opt = Parse("-a");
-                Assert.True(opt.Opt1 && !opt.Opt2 && !opt.Opt3);
-
-                opt = Parse("-b");
-                Assert.True(!opt.Opt1 && opt.Opt2 && !opt.Opt3);
-
-                opt = Parse("-c");
-                Assert.True(!opt.Opt1 && !opt.Opt2 && opt.Opt3);
-
-                opt = Parse("-abc");
-                Assert.True(opt.Opt1 && opt.Opt2 && opt.Opt3);
-
-                opt = Parse("-bc");
-                Assert.True(!opt.Opt1 && opt.Opt2 && opt.Opt3);
-
-                opt = Parse("-aa");
-                Assert.True(opt.Opt1 && !opt.Opt2 && !opt.Opt3);
-
-                opt = Parse("-a", "-b", "-c");
-                Assert.True(opt.Opt1 && opt.Opt2 && opt.Opt3);
-
-                opt = Parse("-b", "-c");
-                Assert.True(!opt.Opt1 && opt.Opt2 && opt.Opt3);
-
-                opt = Parse("-a", "-a" );
-                Assert.True(opt.Opt1 && !opt.Opt2 && !opt.Opt3);
+                Assert.True(opt.Opt1 == expectedOpt1);
+                Assert.True(opt.Opt2 == expectedOpt2);
+                Assert.True(opt.Opt3 == expectedOpt3);
             }
         }
 
