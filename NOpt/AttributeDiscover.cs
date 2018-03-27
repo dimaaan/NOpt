@@ -8,7 +8,7 @@ namespace NOpt
 {
     internal static class AttributeDiscover
     {
-        private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$", RegexOptions.Compiled);
+        private static readonly Regex validOptionName = new Regex(@"^_\w+|[\w-[0-9_-]]\w*$");
 
         /// <summary>
         /// Extract option class members via reflection into dictionary

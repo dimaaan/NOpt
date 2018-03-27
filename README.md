@@ -2,7 +2,7 @@
 
 Small, flexible and crossplatform command line parser.
 
-> Target: .NET Standard 1.4
+> Target: .NET Standard 1.2
 
 
 ## Show me the code
