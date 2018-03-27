@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netstandard1.2</TargetFramework>
     <Authors>Dmitry Anshilevich</Authors>
-    <Version>0.8</Version>
+    <Version>0.9</Version>
     <PackageLicenseUrl>https://github.com/dimaaan/NOpt/blob/master/license.txt</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/dimaaan/NOpt</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/dimaaan/NOpt/releases/tag/$(Version)</PackageReleaseNotes>
-    <AssemblyVersion>0.9</AssemblyVersion>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <Description>Command line arguments parser. See https://github.com/dimaaan/NOpt</Description>
     <Product />
